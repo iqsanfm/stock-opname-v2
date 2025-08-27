@@ -468,9 +468,9 @@ const StockOpname = ({ user, hasPermission, handleLogout, activeTab, setTransact
                     <td className={item.selisih > 0 ? 'positive' : item.selisih < 0 ? 'negative' : ''}>
                       {item.selisih || 0}
                     </td>
-                    <td>{formatCurrency(item.unitPrice)}</td>
-                    <td>{formatCurrency(item.valueSistem)}</td>
-                    <td>{formatCurrency(item.valueFisik)}</td>
+                    <td className="opname-col-harga">{formatCurrency(item.unitPrice)}</td>
+                    <td className="opname-col-value-sistem">{formatCurrency(item.valueSistem)}</td>
+                    <td className="opname-col-value-fisik">{formatCurrency(item.valueFisik)}</td>
                     <td className="keterangan-col">
                       <input 
                         type="text" 

@@ -321,6 +321,19 @@ tbody tr:hover {
   
   .btn {
   }
+
+  /* Adjust column widths for smaller screens */
+  .col-tanggal { width: 70px; }
+  .col-sku { width: 70px; }
+  .col-nama-barang { width: 100px; } /* Reduced */
+  .col-jenis { width: 70px; }
+  .col-merk { width: 70px; }
+  .col-tipe { width: 60px; } /* Reduced */
+  .col-jumlah { width: 60px; } /* Reduced */
+  .col-harga { width: 90px; } /* Reduced */
+  .col-total { width: 110px; } /* Reduced */
+  .col-keterangan { width: 130px; } /* Reduced */
+  .col-actions { width: 100px; } /* Reduced */
 }
 
 @media (max-width: 480px) {
@@ -353,9 +366,9 @@ tbody tr:hover {
 .col-merk { width: 80px; }
 .col-tipe { width: 70px; }
 .col-jumlah { width: 70px; }
-.col-harga { width: 90px; }
-.col-total { width: 90px; }
-.col-keterangan { width: 100px; }
+.col-harga { width: 100px; }
+.col-total { width: 120px; }
+.col-keterangan { width: 150px; }
 .col-actions { width: 120px; }
 
 
@@ -413,9 +426,24 @@ tbody tr:hover {
   color: white;
 }
 
+.daily-view-btn.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.daily-view-btn.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
 .daily-view-btn.btn-danger {
   background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
   color: white;
+}
+
+.daily-view-btn.btn-danger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(245, 101, 101, 0.3);
 }
 
 /* For small buttons, ensure they inherit colors */

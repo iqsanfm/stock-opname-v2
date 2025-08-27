@@ -327,14 +327,14 @@ const ItemList = ({ user, hasPermission, handleLogout, activeTab }) => {
           <table id="itemsTable">
             <thead>
               <tr>
-                <th>SKU</th>
-                <th>Nama Barang</th>
-                <th>Jenis</th>
-                <th>Merk</th>
-                <th>Unit</th>
-                <th>Stock</th>
-                <th>Harga Dasar</th>
-                {hasPermission('admin') && <th>Actions</th>}
+                <th className="item-col-sku">SKU</th>
+                <th className="item-col-nama-barang">Nama Barang</th>
+                <th className="item-col-jenis">Jenis</th>
+                <th className="item-col-merk">Merk</th>
+                <th className="item-col-unit">Unit</th>
+                <th className="item-col-stock">Stock</th>
+                <th className="item-col-harga-dasar">Harga Dasar</th>
+                {hasPermission('admin') && <th className="item-col-actions">Actions</th>}
               </tr>
             </thead>
             <tbody>
@@ -347,15 +347,15 @@ const ItemList = ({ user, hasPermission, handleLogout, activeTab }) => {
               ) : (
                 items.map(item => (
                   <tr key={item._id}>
-                    <td>{item.sku}</td>
-                    <td>{item.name}</td>
-                    <td>{item.category || '-'}</td>
-                    <td>{item.brand || '-'}</td>
-                    <td>{item.unit}</td>
-                    <td>{item.currentStock}</td>
-                    <td>{formatCurrency(item.basePrice)}</td>
+                    <td className="item-col-sku">{item.sku}</td>
+                    <td className="item-col-nama-barang">{item.name}</td>
+                    <td className="item-col-jenis">{item.category || '-'}</td>
+                    <td className="item-col-merk">{item.brand || '-'}</td>
+                    <td className="item-col-unit">{item.unit}</td>
+                    <td className="item-col-stock">{item.currentStock}</td>
+                    <td className="item-col-harga-dasar">{formatCurrency(item.basePrice)}</td>
                     {hasPermission('admin') && (
-                      <td>
+                      <td className="item-col-actions">
                         <div className="item-action-buttons"> {/* New wrapper div */}
                           <button className="btn btn-warning btn-sm" onClick={() => handleEditItem(item)}>Edit</button>
                           <button className="btn btn-danger btn-sm" onClick={() => handleDeleteItem(item._id)}>Hapus</button>

@@ -4,8 +4,8 @@ import Alert from '../UI/Alert'; // Assuming Alert is used within LoginForm
 
 
 const LoginForm = ({ onLogin, showAlert }) => {
-  const [loginEmail, setLoginEmail] = useState('admin@inventory.com');
-  const [loginPassword, setLoginPassword] = useState('password123');
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -59,6 +59,7 @@ const LoginForm = ({ onLogin, showAlert }) => {
             required 
             value={loginEmail}
             onChange={(e) => setLoginEmail(e.target.value)}
+            autocomplete="on"
           />
         </div>
         <div className="form-group">
@@ -69,6 +70,7 @@ const LoginForm = ({ onLogin, showAlert }) => {
             required 
             value={loginPassword}
             onChange={(e) => setLoginPassword(e.target.value)}
+            autocomplete="new-password"
           />
         </div>
         <button type="submit" className="btn btn-success">Login</button>

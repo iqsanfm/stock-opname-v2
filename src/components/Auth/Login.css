@@ -204,3 +204,56 @@ form .btn {
     color: #888;
     font-style: italic;
 }
+
+@media (max-width: 480px) {
+  .auth-content {
+    padding: 20px; /* Reduced padding for smaller screens */
+  }
+
+  .auth-tab {
+    font-size: 0.9rem; /* Slightly smaller font for tabs */
+    padding: 12px;
+  }
+
+  #loginForm h2, #registerForm h2 {
+    font-size: 1.5rem; /* Smaller heading */
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    font-size: 0.8rem; /* Smaller label font */
+  }
+
+  .form-group input,
+  .form-group select {
+    padding: 10px; /* Smaller input padding */
+    font-size: 0.85rem;
+  }
+
+  .btn {
+    padding: 10px 15px; /* Smaller button padding */
+    font-size: 0.8rem;
+  }
+
+  .demo-accounts-info {
+    padding: 15px;
+    margin-top: 20px;
+  }
+
+  .demo-header h4 {
+    font-size: 1rem;
+  }
+
+  .demo-icon {
+    font-size: 1.2rem;
+  }
+
+  .demo-role {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+  }
+
+  .demo-credentials {
+    font-size: 0.8rem;
+  }
+}

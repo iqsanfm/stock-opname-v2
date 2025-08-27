@@ -7,6 +7,7 @@
   background: white;
   border-radius: 15px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  overflow: auto; /* Add this to ensure containment */
 }
 
 .profile-settings-container h2 {
@@ -125,5 +126,34 @@
   }
   .form-section {
     padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-settings-container {
+    padding: 10px;
+    margin: 10px;
+  }
+  .profile-settings-container h2 {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+  }
+  .form-section {
+    padding: 10px;
+  }
+  .form-section h3 {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+  }
+  .form-group label {
+    font-size: 0.8rem;
+  }
+  .form-group input {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+  .profile-btn {
+    padding: 8px 15px;
+    font-size: 0.8rem;
   }
 }

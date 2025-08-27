@@ -122,6 +122,16 @@ const ProfileSettings = ({ user, handleLogout, hasPermission }) => {
       {alert.message && <Alert message={alert.message} type={alert.type} onClose={() => setAlert({ message: '', type: '' })} />}
       
       <h2>Pengaturan Profil</h2>
+      <div className="user-profile-info-section form-section">
+        <h3>Informasi Pengguna</h3>
+        <p><strong>Username:</strong> {profile.username}</p>
+        <p><strong>Email:</strong> {profile.email}</p>
+        <p><strong>Role:</strong> <span style={{ color: profile.role === 'admin' ? '#e74c3c' : '#3498db', fontWeight: 600 }}>{profile.role.toUpperCase()}</span></p>
+        <button onClick={handleLogout} className="profile-btn btn-danger" style={{ marginTop: '15px' }}>
+          🚪 Logout
+        </button>
+      </div>
+
       {isLoading && <div className="loading-indicator">Memuat...</div>}
 
       <div className="form-section">

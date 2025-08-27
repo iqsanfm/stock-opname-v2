@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import AuthModal from './components/Auth/AuthModal';
-import UserInfo from './components/UI/UserInfo';
 import DailyView from './components/Transaction/DailyView';
 import MonthlyReports from './components/Reports/MonthlyReports';
 import StockOpname from './components/Opname/StockOpname';
@@ -171,7 +170,6 @@ function App() {
       <header className="header">
         <h1>Stock Opname System</h1>
         <p>Sistem Manajemen Inventory dengan Transaksi Harian & Akumulasi Bulanan</p>
-        <UserInfo user={user} onLogout={handleLogout} />
       </header>
       <main className="main-content">
         <div className="tabs">

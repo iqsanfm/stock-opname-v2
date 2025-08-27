@@ -117,27 +117,45 @@ const MonthlyReports = ({ user, hasPermission, handleLogout, activeTab, setActiv
       return;
     }
     try {
-      // Assuming backend provides a direct export endpoint
-      const response = await apiCall(`/api/monthly-reports/${reportMonth}/export`, 'GET');
-      if (response.success) {
-        // Backend should send file directly, so we just trigger download
-        const url = `${import.meta.env.VITE_API_BASE_URL}/api/monthly-reports/${reportMonth}/export`;
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `laporan_bulanan_${reportMonth}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        showAlert('Laporan bulanan berhasil di-export!', 'success');
-      } else {
-        showAlert(response.message || 'Gagal meng-export laporan bulanan.', 'error');
-      }
-    } catch (err) {
-      if (err.isAuthError) {
+      const url = `${import.meta.env.VITE_API_BASE_URL}/api/monthly-reports/${reportMonth}/export`;
+      const authToken = localStorage.getItem('authToken');
+      const headers = {
+        'Authorization': `Bearer ${authToken}`,
+      };
+
+      const response = await fetch(url, { headers });
+
+      if (response.status === 401 || response.status === 403) {
         handleLogout();
-      } else {
-        showAlert(err.message || 'Terjadi kesalahan saat meng-export laporan bulanan.', 'error');
+        return;
       }
+
+      if (!response.ok) {
+        let errorMessage = 'Gagal meng-export laporan bulanan.';
+        try {
+          const errorResult = await response.json();
+          errorMessage = errorResult.message || errorMessage;
+        } catch (parseError) {
+          // If we can't parse JSON, use status text
+          errorMessage = response.statusText || errorMessage;
+        }
+        showAlert(errorMessage, 'error');
+        return;
+      }
+
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = `laporan_bulanan_${reportMonth}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(downloadUrl); // Clean up the URL object
+
+      showAlert('Laporan bulanan berhasil di-export!', 'success');
+    } catch (err) {
+      showAlert(err.message || 'Terjadi kesalahan saat meng-export laporan bulanan.', 'error');
     }
   };
 
@@ -295,32 +313,32 @@ const MonthlyReports = ({ user, hasPermission, handleLogout, activeTab, setActiv
             <table id="monthlyReportTable">
               <thead>
                 <tr>
-                  <th>SKU</th>
-                  <th>Nama Barang</th>
-                  <th>Jenis</th>
-                  <th>Merk</th>
-                  <th>Stock Awal</th>
-                  <th>Harga Awal</th>
-                  <th>Barang Masuk</th>
-                  <th>Barang Keluar</th>
-                  <th>Stock Akhir</th>
-                  <th>Harga Rata - Rata</th>
+                  <th className="monthly-col-sku">SKU</th>
+                  <th className="monthly-col-nama-barang">Nama Barang</th>
+                  <th className="monthly-col-jenis">Jenis</th>
+                  <th className="monthly-col-merk">Merk</th>
+                  <th className="monthly-col-stock-awal">Stock Awal</th>
+                  <th className="monthly-col-harga-awal">Harga Awal</th>
+                  <th className="monthly-col-barang-masuk">Barang Masuk</th>
+                  <th className="monthly-col-barang-keluar">Barang Keluar</th>
+                  <th className="monthly-col-stock-akhir">Stock Akhir</th>
+                  <th className="monthly-col-harga-rata-rata">Harga Rata - Rata</th>
                   <th className="monthly-col-total-value">Total Value</th>
                 </tr>
               </thead>
               <tbody id="monthlyReportBody">
                 {filteredMonthlyData.map((item, index) => (
                   <tr key={item.id || index}>
-                    <td>{item.itemId?.sku || '-'}</td>
-                    <td>{item.itemId?.name || '-'}</td>
-                    <td>{item.itemId?.category || '-'}</td>
-                    <td>{item.itemId?.brand || '-'}</td>
-                    <td>{item.stockAwal}</td>
-                    <td>{formatCurrency(item.hargaAwal)}</td>
-                    <td>{item.barangMasuk}</td>
-                    <td>{item.barangKeluar}</td>
-                    <td>{item.stockAkhir}</td>
-                    <td>{formatCurrency(item.hargaRataRata)}</td>
+                    <td className="monthly-col-sku">{item.itemId?.sku || '-'}</td>
+                    <td className="monthly-col-nama-barang">{item.itemId?.name || '-'}</td>
+                    <td className="monthly-col-jenis">{item.itemId?.category || '-'}</td>
+                    <td className="monthly-col-merk">{item.itemId?.brand || '-'}</td>
+                    <td className="monthly-col-stock-awal">{item.stockAwal}</td>
+                    <td className="monthly-col-harga-awal">{formatCurrency(item.hargaAwal)}</td>
+                    <td className="monthly-col-barang-masuk">{item.barangMasuk}</td>
+                    <td className="monthly-col-barang-keluar">{item.barangKeluar}</td>
+                    <td className="monthly-col-stock-akhir">{item.stockAkhir}</td>
+                    <td className="monthly-col-harga-rata-rata">{formatCurrency(item.hargaRataRata)}</td>
                     <td className="monthly-col-total-value">{formatCurrency(item.totalValue)}</td>
                   </tr>
                 ))}

@@ -512,8 +512,8 @@ const DailyView = ({ hasPermission, handleLogout, transactions, setTransactions,
                     <td className="text-center"><span className={`badge ${t.tipe_transaksi}`}>{t.tipe_transaksi === 'stock_awal' ? 'STOCK' : (t.tipe_transaksi ? t.tipe_transaksi.replace('_', ' ').toUpperCase() : '')}</span></td>
                     <td className="text-right">{t.jumlah}</td>
                     <td className="text-right">{formatCurrency(t.harga)}</td>
-                    <td className="text-right">{formatCurrency(t.total)}</td>
-                    <td>{t.keterangan}</td>
+                    <td className="col-total text-right">{formatCurrency(t.total)}</td>
+                    <td className="col-keterangan">{t.keterangan}</td>
                     <td className="text-center">
                       <div className="button-group">
                         {hasPermission('admin') && <button className="btn daily-view-btn-sm btn-warning" onClick={() => handleEdit(t)}>Edit</button>}

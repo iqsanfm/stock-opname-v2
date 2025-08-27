@@ -1,4 +1,3 @@
-
 .create-opname-controls {
   display: flex;
   align-items: flex-end; /* Align items to their baselines */
@@ -26,9 +25,17 @@
   text-align: center;
 }
 
-.opname-col-stock-fisik {
-  width: 100px; /* Adjust as needed */
-}
+/* Default column widths for Stock Opname Table */
+.opname-col-sku { width: 80px; }
+.opname-col-nama-barang { width: 150px; }
+.opname-col-jenis { width: 80px; }
+.opname-col-merk { width: 80px; }
+.opname-col-stock-sistem { width: 100px; }
+.opname-col-stock-fisik { width: 100px; }
+.opname-col-selisih { width: 80px; }
+.opname-col-harga { width: 100px; }
+.opname-col-value-sistem, .opname-col-value-fisik { width: 120px; }
+.keterangan-col { width: 150px; }
 
 .opname-col-stock-fisik-input input.form-control {
   max-width: 80px; /* Adjust as needed */
@@ -36,11 +43,34 @@
   margin: 0 auto; /* Center the input within the cell */
 }
 
-.keterangan-col {
-  width: 150px; /* Adjust as needed */
-}
-
 .keterangan-col input.form-control {
   max-width: 140px; /* Adjust as needed, slightly less than column width */
   text-align: left; /* Keterangan is usually left-aligned */
+}
+
+/* Responsive Design for Stock Opname Table */
+@media (max-width: 768px) {
+  .opname-col-sku { width: 70px; }
+  .opname-col-nama-barang { width: 120px; }
+  .opname-col-jenis { width: 70px; }
+  .opname-col-merk { width: 70px; }
+  .opname-col-stock-sistem { width: 90px; }
+  .opname-col-stock-fisik { width: 90px; }
+  .opname-col-selisih { width: 70px; }
+  .opname-col-harga { width: 90px; }
+  .opname-col-value-sistem, .opname-col-value-fisik { width: 100px; }
+  .keterangan-col { width: 120px; }
+}
+
+@media (max-width: 480px) {
+  .opname-col-sku { width: 60px; }
+  .opname-col-nama-barang { width: 100px; }
+  .opname-col-jenis { width: 60px; }
+  .opname-col-merk { width: 60px; }
+  .opname-col-stock-sistem { width: 80px; }
+  .opname-col-stock-fisik { width: 80px; }
+  .opname-col-selisih { width: 60px; }
+  .opname-col-harga { width: 80px; }
+  .opname-col-value-sistem, .opname-col-value-fisik { width: 90px; }
+  .keterangan-col { width: 100px; }
 }

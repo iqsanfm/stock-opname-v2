@@ -44,3 +44,36 @@
   color: #546e7a;
   font-weight: 500;
 }
+
+/* Default column widths for ItemList Table */
+.item-col-sku { width: 80px; }
+.item-col-nama-barang { width: 150px; }
+.item-col-jenis { width: 80px; }
+.item-col-merk { width: 80px; }
+.item-col-unit { width: 70px; }
+.item-col-stock { width: 70px; }
+.item-col-harga-dasar { width: 120px; text-align: right; }
+.item-col-actions { width: 120px; }
+
+/* Responsive Design for ItemList Table */
+@media (max-width: 768px) {
+  .item-col-sku { width: 70px; }
+  .item-col-nama-barang { width: 120px; }
+  .item-col-jenis { width: 70px; }
+  .item-col-merk { width: 70px; }
+  .item-col-unit { width: 60px; }
+  .item-col-stock { width: 60px; }
+  .item-col-harga-dasar { width: 100px; }
+  .item-col-actions { width: 100px; }
+}
+
+@media (max-width: 480px) {
+  .item-col-sku { width: 60px; }
+  .item-col-nama-barang { width: 100px; }
+  .item-col-jenis { width: 60px; }
+  .item-col-merk { width: 60px; }
+  .item-col-unit { width: 50px; }
+  .item-col-stock { width: 50px; }
+  .item-col-harga-dasar { width: 90px; }
+  .item-col-actions { width: 90px; }
+}
