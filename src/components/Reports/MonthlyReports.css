@@ -1,0 +1,4 @@
+.monthly-col-total-value {
+  width: 120px; /* Adjust as needed to fit the currency */
+  text-align: right; /* Align currency to the right */
+}

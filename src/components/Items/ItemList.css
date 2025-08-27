@@ -1,0 +1,46 @@
+/* Styles for ItemList component */
+
+/* Action buttons in table */
+.item-action-buttons {
+  display: flex;
+  gap: 8px; /* Space between buttons */
+  justify-content: center; /* Center buttons within the cell */
+  align-items: center;
+}
+
+/* Pagination Styles */
+.pagination {
+  display: flex;
+  justify-content: center; /* Center the pagination controls */
+  align-items: center;
+  margin-top: 20px;
+  gap: 15px; /* Space between elements */
+}
+
+.pagination button {
+  padding: 8px 15px;
+  border: 1px solid #cfd8dc;
+  border-radius: 8px;
+  background-color: #fcfdff;
+  color: #37474f;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #e0e0e0;
+  border-color: #b0b0b0;
+}
+
+.pagination button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-size: 0.95rem;
+  color: #546e7a;
+  font-weight: 500;
+}

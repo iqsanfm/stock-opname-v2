@@ -1,0 +1,375 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Opname Barang - Daily & Monthly</title>
+    <link rel="icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Authentication Modal -->
+    <div id="authModal" class="auth-container" style="display: block;">
+        <div class="auth-tabs">
+            <button class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
+            <button class="auth-tab" onclick="switchAuthTab('register')">Register</button>
+        </div>
+        <div class="auth-content">
+            <div id="loginForm">
+                <h2>Login</h2>
+                <form id="loginFormElement">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">Login</button>
+                </form>
+                <div class="demo-accounts-info">
+                    <div class="demo-header">
+                        <span class="demo-icon">🔑</span>
+                        <h4>Akun Demo</h4>
+                    </div>
+                    <div class="demo-account">
+                        <div class="demo-role admin">👑 ADMIN</div>
+                        <div class="demo-credentials">
+                            <span class="demo-email">admin@inventory.com</span>
+                            <span class="demo-password">password123</span>
+                        </div>
+                    </div>
+                    <div class="demo-account">
+                        <div class="demo-role user">👤 USER</div>
+                        <div class="demo-credentials">
+                            <span class="demo-email">user1@inventory.com</span>
+                            <span class="demo-password">password123</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="registerForm" style="display: none;">
+                <h2>Register</h2>
+                <form id="registerFormElement">
+                    <div class="form-group">
+                        <label for="registerUsername">Username</label>
+                        <input type="text" id="registerUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email</label>
+                        <input type="email" id="registerEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Password</label>
+                        <input type="password" id="registerPassword" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerRole">Role</label>
+                        <select id="registerRole">
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success">Register</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="mainApp">
+        <div class="header">
+            <h1>Stock Opname System</h1>
+            <p>Sistem Manajemen Inventory dengan Transaksi Harian & Akumulasi Bulanan</p>
+            <div class="user-info" id="userInfo"></div>
+        </div>
+
+        <div class="main-content">
+            <!-- Alert Container -->
+            <div id="alertContainer"></div>
+
+            <!-- Tab Navigation -->
+            <div class="tabs">
+                <button class="tab-button active" onclick="switchTab('daily')">Transaksi Harian</button>
+                <button class="tab-button" onclick="switchTab('monthly')">Laporan Bulanan</button>
+                <button class="tab-button" onclick="switchTab('opname')">Stock Opname</button>
+            </div>
+
+            <!-- Daily Transactions Tab -->
+            <div id="dailyTab" class="tab-content active">
+                <!-- Daily Statistics -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="dailyTransactions">0</div>
+                        <div class="stat-label">Transaksi Hari Ini</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="dailyIn">0</div>
+                        <div class="stat-label">Total Barang Masuk</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="dailyOut">0</div>
+                        <div class="stat-label">Total Barang Keluar</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="dailyValue">Rp 0</div>
+                        <div class="stat-label">Nilai Transaksi</div>
+                    </div>
+                </div>
+
+                <!-- Daily Transaction Form -->
+                <div class="form-section">
+                    <h2>Input Transaksi Harian</h2>
+                    <form id="dailyTransactionForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="tanggal">Tanggal Transaksi</label>
+                                <input type="date" id="tanggal" name="tanggal" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sku_daily">SKU</label>
+                                <input type="text" id="sku_daily" name="sku" required placeholder="Contoh: LP001, KA001, MK001" list="skuList" onchange="autoFillFromSKU()" oninput="delayedAutoFill()">
+                                <datalist id="skuList"></datalist>
+                            </div>
+                            <div class="form-group">
+                                <label for="sparepart_daily">Nama Barang</label>
+                                <input type="text" id="sparepart_daily" name="sparepart" required list="sparepartsList" placeholder="Contoh: Laptop, Kertas A4, Meja Kantor, dll">
+                                <datalist id="sparepartsList"></datalist>
+                            </div>
+                            <div class="form-group">
+                                <label for="jenis_daily">Jenis/Kategori</label>
+                                <input type="text" id="jenis_daily" name="jenis" required placeholder="Contoh: Elektronik, Makanan, Alat Tulis, dll">
+                            </div>
+                            <div class="form-group">
+                                <label for="merk_daily">Merk</label>
+                                <input type="text" id="merk_daily" name="merk" required placeholder="Contoh: HP, Canon, IKEA, dll">
+                            </div>
+                            <div class="form-group">
+                                <label for="tipe_transaksi">Tipe Transaksi</label>
+                                <select id="tipe_transaksi" name="tipe_transaksi" required onchange="toggleTransactionFields()">
+                                    <option value="">Pilih Tipe</option>
+                                    <option value="masuk">Barang Masuk</option>
+                                    <option value="keluar">Barang Keluar</option>
+                                    <option value="stock_awal">Stock Awal</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="jumlah">Jumlah</label>
+                                <input type="number" id="jumlah" name="jumlah" min="0" required>
+                            </div>
+                            <div class="form-group" id="hargaGroup">
+                                <label for="harga">Harga per Unit</label>
+                                <input type="number" id="harga" name="harga" min="0" step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label for="keterangan">Keterangan</label>
+                                <input type="text" id="keterangan" name="keterangan" placeholder="Opsional">
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <button type="submit" class="btn btn-success">Simpan Transaksi</button>
+                            <button type="button" class="btn" onclick="clearDailyForm()">Reset Form</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Daily Transactions Table -->
+                <div class="form-section">
+                    <h2>Transaksi Harian</h2>
+                    <div class="controls-section">
+                        <div class="filter-section">
+                            <div class="form-group">
+                                <label for="filterDate">Filter Tanggal</label>
+                                <input type="date" id="filterDate" onchange="filterDailyTransactions()">
+                            </div>
+                            <div class="form-group">
+                                <label for="filterSparepart">Filter Nama Barang</label>
+                                <input type="text" id="filterSparepart" placeholder="Cari nama barang..." onkeyup="filterDailyTransactions()">
+                            </div>
+                            <div class="form-group">
+                                <label for="filterType">Filter Tipe</label>
+                                <select id="filterType" onchange="filterDailyTransactions()">
+                                    <option value="">Semua Tipe</option>
+                                    <option value="stock_awal">Stock Awal</option>
+                                    <option value="masuk">Barang Masuk</option>
+                                    <option value="keluar">Barang Keluar</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="actions">
+                            <button class="btn btn-info" onclick="exportDailyTransactions()">Export Transaksi</button>
+                            <button class="btn btn-warning" onclick="generateMonthlyReport()">Generate Laporan Bulanan</button>
+                            <button class="btn btn-success" onclick="exportAllData()">Backup Data</button>
+                            <button class="btn btn-primary" onclick="importData()">Import Data</button>
+                            <button class="btn btn-primary" onclick="importCSV()">Import CSV</button>
+                            <button class="btn btn-warning" onclick="checkDataIntegrity()">Cek Konsistensi Data</button>
+                            <button class="btn btn-danger" onclick="deleteAllData()">🗑️ Hapus Semua Data</button>
+                            <input type="file" id="importFile" accept=".json" style="display: none" onchange="handleImportFile(event)">
+                            <input type="file" id="importCSVFile" accept=".csv" style="display: none" onchange="handleImportCSVFile(event)">
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table id="dailyTransactionsTable">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>SKU</th>
+                                    <th>Nama Barang</th>
+                                    <th>Jenis</th>
+                                    <th>Merk</th>
+                                    <th>Tipe</th>
+                                    <th>Jumlah</th>
+                                    <th>Harga</th>
+                                    <th>Total</th>
+                                    <th>Keterangan</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dailyTransactionsBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly Report Tab -->
+            <div id="monthlyTab" class="tab-content">
+                <!-- Monthly Statistics -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="monthlyItems">0</div>
+                        <div class="stat-label">Total Items</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="monthlyValue">Rp 0</div>
+                        <div class="stat-label">Total Value</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="monthlyIn">0</div>
+                        <div class="stat-label">Total Masuk Bulan Ini</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="monthlyOut">0</div>
+                        <div class="stat-label">Total Keluar Bulan Ini</div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Laporan Bulanan</h2>
+                    <div class="controls-section">
+                        <div class="filter-section">
+                            <div class="form-group">
+                                <label for="reportMonth">Pilih Bulan : Di Menu Bulan</label>
+                                <input type="month" id="reportMonth" onchange="displayMonthlyReport()">
+                            </div>
+                            <div class="form-group">
+                                <label for="filterMonthlySparepart">Filter Nama Barang</label>
+                                <input type="text" id="filterMonthlySparepart" placeholder="Cari nama barang..." onkeyup="displayMonthlyReport()">
+                            </div>
+                        </div>
+
+                        <div class="actions">
+                            <button class="btn btn-info" onclick="exportMonthlyReport()">Export Laporan Bulanan</button>
+                            <button class="btn btn-warning" onclick="copyToOpname()">Copy ke Stock Opname</button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table id="monthlyReportTable">
+                            <thead>
+                                <tr>
+                                    <th>SKU</th>
+                                    <th>Nama Barang</th>
+                                    <th>Jenis</th>
+                                    <th>Merk</th>
+                                    <th>Stock Awal</th>
+                                    <th>Harga Awal</th>
+                                    <th>Barang Masuk</th>
+                                    <th>Barang Keluar</th>
+                                    <th>Stock Akhir</th>
+                                    <th>Harga Rata - Rata</th>
+                                    <th>Total Value</th>
+                                </tr>
+                            </thead>
+                            <tbody id="monthlyReportBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stock Opname Tab -->
+            <div id="opnameTab" class="tab-content">
+                <!-- Opname Statistics -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="opnameItems">0</div>
+                        <div class="stat-label">Items di Opname</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="opnameValue">Rp 0</div>
+                        <div class="stat-label">Total Value Opname</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="selisihPositif">0</div>
+                        <div class="stat-label">Selisih Lebih</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="selisihNegatif">0</div>
+                        <div class="stat-label">Selisih Kurang</div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Stock Opname</h2>
+                    <div class="controls-section">
+                        <div class="filter-section">
+                            <div class="form-group">
+                                <label for="opnameMonth">Bulan Opname</label>
+                                <input type="month" id="opnameMonth" onchange="displayOpnameData()">
+                            </div>
+                            <div class="form-group">
+                                <label for="filterOpnameSparepart">Filter Nama Barang</label>
+                                <input type="text" id="filterOpnameSparepart" placeholder="Cari nama barang..." onkeyup="displayOpnameData()">
+                            </div>
+                        </div>
+
+                        <div class="actions">
+                            <button class="btn btn-info" onclick="exportOpnameReport()">Export Stock Opname</button>
+                            <button class="btn btn-success" onclick="saveOpnameResults()">Simpan Hasil Opname</button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table id="opnameTable">
+                            <thead>
+                                <tr>
+                                    <th>SKU</th>
+                                    <th>Nama Barang</th>
+                                    <th>Jenis</th>
+                                    <th>Merk</th>
+                                    <th>Stock Sistem</th>
+                                    <th>Stock Fisik (Input)</th>
+                                    <th>Selisih</th>
+                                    <th>Harga</th>
+                                    <th>Value Sistem</th>
+                                    <th>Value Fisik</th>
+                                    <th>Keterangan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="opnameBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <div class="footer-text">Powered By SigmaTech</div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+:root {
+    --primary-color: #2962ff;
+    --accent-color: #00bfa5;
+    --danger-color: #d50000;
+    --warning-color: #ffab00;
+    --text-color: #37474f;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    color: white;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    font-weight: 500;
+    animation: slideIn 0.3s ease-out forwards;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.alert-success { background-color: var(--accent-color); }
+.alert-error { background-color: var(--danger-color); }
+.alert-warning { background-color: var(--warning-color); color: var(--text-color); }
+.alert-info { background-color: var(--primary-color); }

@@ -1,0 +1,13 @@
+html, body {
+  height: 100%; /* Ensure html and body take full height */
+  margin: 0;
+}
+
+body {
+  min-width: 320px;
+}
+
+#root {
+  min-height: 100vh;
+  height: 100%; /* Ensure #root takes full height */
+}

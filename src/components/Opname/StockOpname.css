@@ -1,0 +1,46 @@
+
+.create-opname-controls {
+  display: flex;
+  align-items: flex-end; /* Align items to their baselines */
+  gap: 15px; /* Space between the input and button */
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.create-opname-controls .form-group {
+  margin-bottom: 0; /* Remove default margin-bottom from form-group */
+}
+
+.actions {
+  display: flex;
+  gap: 10px; /* Adjust as needed for spacing between buttons */
+  flex-wrap: wrap;
+  align-items: flex-end; /* Align buttons vertically */
+}
+
+.btn-fixed-size {
+  min-width: 150px; /* Example fixed width */
+  min-height: 40px; /* Example fixed height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.opname-col-stock-fisik {
+  width: 100px; /* Adjust as needed */
+}
+
+.opname-col-stock-fisik-input input.form-control {
+  max-width: 80px; /* Adjust as needed */
+  text-align: center;
+  margin: 0 auto; /* Center the input within the cell */
+}
+
+.keterangan-col {
+  width: 150px; /* Adjust as needed */
+}
+
+.keterangan-col input.form-control {
+  max-width: 140px; /* Adjust as needed, slightly less than column width */
+  text-align: left; /* Keterangan is usually left-aligned */
+}
