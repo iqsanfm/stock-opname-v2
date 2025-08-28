@@ -59,7 +59,7 @@ const LoginForm = ({ onLogin, showAlert }) => {
             required 
             value={loginEmail}
             onChange={(e) => setLoginEmail(e.target.value)}
-            autocomplete="on"
+            autoComplete="on"
           />
         </div>
         <div className="form-group">
@@ -70,7 +70,7 @@ const LoginForm = ({ onLogin, showAlert }) => {
             required 
             value={loginPassword}
             onChange={(e) => setLoginPassword(e.target.value)}
-            autocomplete="new-password"
+            autoComplete="new-password"
           />
         </div>
         <button type="submit" className="btn btn-success">Login</button>

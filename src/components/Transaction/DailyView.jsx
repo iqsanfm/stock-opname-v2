@@ -205,7 +205,7 @@ const DailyView = ({ hasPermission, handleLogout, transactions, setTransactions,
       if (err.isAuthError) {
         handleLogout();
       } else {
-        showAlert('Terjadi kesalahan saat menyimpan transaksi.', 'error');
+        showAlert(err.message || 'Terjadi kesalahan saat menyimpan transaksi.', 'error');
       }
       console.error("Failed to save transaction", err);
     }
@@ -247,7 +247,7 @@ const DailyView = ({ hasPermission, handleLogout, transactions, setTransactions,
         if (err.isAuthError) {
           handleLogout();
         } else {
-          showAlert('Terjadi kesalahan saat menghapus transaksi.', 'error');
+          showAlert(err.message || 'Terjadi kesalahan saat menghapus transaksi.', 'error');
         }
         console.error("Failed to delete transaction", err);
       }
@@ -319,7 +319,7 @@ const DailyView = ({ hasPermission, handleLogout, transactions, setTransactions,
       if (err.isAuthError) {
         handleLogout();
       } else {
-        showAlert('Terjadi kesalahan saat menghapus data.', 'error');
+        showAlert(err.message || 'Terjadi kesalahan saat menghapus data.', 'error');
       }
       console.error("Failed to delete all data", err);
     }
@@ -342,7 +342,7 @@ const DailyView = ({ hasPermission, handleLogout, transactions, setTransactions,
       if (err.isAuthError) {
         handleLogout();
       } else {
-        showAlert('Terjadi kesalahan saat generate laporan bulanan.', 'error');
+        showAlert(err.message || 'Terjadi kesalahan saat generate laporan bulanan.', 'error');
       }
       console.error("Failed to generate monthly report", err);
     }
@@ -491,16 +491,17 @@ const DailyView = ({ hasPermission, handleLogout, transactions, setTransactions,
                 <th className="col-harga text-right">Harga</th>
                 <th className="col-total text-right">Total</th>
                 <th className="col-keterangan">Keterangan</th>
+                <th className="col-user">User</th>
                 <th className="col-actions text-center">Actions</th>
               </tr>
             </thead>
             <tbody id="dailyTransactionsBody">
               {loading ? (
-                <tr><td colSpan="11">Memuat transaksi...</td></tr>
+                <tr><td colSpan="12">Memuat transaksi...</td></tr>
               ) : error ? (
-                <tr><td colSpan="11" style={{ color: 'red' }}>Error: {error}</td></tr>
+                <tr><td colSpan="12" style={{ color: 'red' }}>Error: {error}</td></tr>
               ) : filteredTransactions.length === 0 ? (
-                <tr><td colSpan="11">Tidak ada transaksi ditemukan.</td></tr>
+                <tr><td colSpan="12">Tidak ada transaksi ditemukan.</td></tr>
               ) : (
                 filteredTransactions.map(t => (
                   <tr key={t.id}>
@@ -514,6 +515,7 @@ const DailyView = ({ hasPermission, handleLogout, transactions, setTransactions,
                     <td className="text-right">{formatCurrency(t.harga)}</td>
                     <td className="col-total text-right">{formatCurrency(t.total)}</td>
                     <td className="col-keterangan">{t.keterangan}</td>
+                    <td>{t.user}</td>
                     <td className="text-center">
                       <div className="button-group">
                         {hasPermission('admin') && <button className="btn daily-view-btn-sm btn-warning" onClick={() => handleEdit(t)}>Edit</button>}

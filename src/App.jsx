@@ -4,9 +4,10 @@ import AuthModal from './components/Auth/AuthModal';
 import DailyView from './components/Transaction/DailyView';
 import MonthlyReports from './components/Reports/MonthlyReports';
 import StockOpname from './components/Opname/StockOpname';
-import ItemList from './components/Items/ItemList'; // Import ItemList
-import ProfileSettings from './components/Auth/ProfileSettings'; // Import ProfileSettings
-import apiCall from './services/api'; // Import apiCall
+import ItemList from './components/Items/ItemList';
+import ProfileSettings from './components/Auth/ProfileSettings';
+import UserManagement from './components/Admin/UserManagement';
+import apiCall from './services/api';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -69,6 +70,7 @@ function App() {
           harga: t.unitPrice || 0,
           total: t.totalPrice || 0,
           keterangan: t.notes || '',
+          user: t.userId ? t.userId.username : 'N/A',
         }));
         setTransactions(mappedTransactions);
       } else {
@@ -150,6 +152,10 @@ function App() {
           handleLogout={handleLogout}
           hasPermission={hasPermission}
         />;
+      case 'user-management':
+        return <UserManagement
+          handleLogout={handleLogout}
+        />;
       default:
         return <DailyView 
           hasPermission={hasPermission} 
@@ -197,6 +203,14 @@ function App() {
           >
             Daftar Item
           </button>
+          {hasPermission('admin') && (
+            <button 
+              className={`tab-button ${activeTab === 'user-management' ? 'active' : ''}`}
+              onClick={() => setActiveTab('user-management')}
+            >
+              Manajemen Pengguna
+            </button>
+          )}
           <button 
             className={`tab-button ${activeTab === 'profile-settings' ? 'active' : ''}`}
             onClick={() => setActiveTab('profile-settings')}
@@ -220,5 +234,6 @@ function App() {
     </div>
   );
 }
+
 
 export default App;

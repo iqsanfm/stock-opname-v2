@@ -30,9 +30,9 @@ const apiCall = async (endpoint, method = 'GET', data = null, isFormData = false
   try {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
 
-    if (response.status === 401 || response.status === 403) {
+    if (response.status === 401) {
       // Token expired or invalid, trigger logout
-      const error = new Error('Unauthorized or Forbidden');
+      const error = new Error('Unauthorized');
       error.statusCode = response.status;
       error.isAuthError = true; // Custom flag to identify auth errors
       throw error;

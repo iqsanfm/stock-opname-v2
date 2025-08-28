@@ -1,5 +1,10 @@
 /* Styles for ItemList component */
 
+#itemsTable {
+  table-layout: fixed;
+  width: 100%;
+}
+
 /* Action buttons in table */
 .item-action-buttons {
   display: flex;
@@ -43,6 +48,7 @@
   font-size: 0.95rem;
   color: #546e7a;
   font-weight: 500;
+  margin: 0 15px;
 }
 
 /* Default column widths for ItemList Table */
