@@ -53,15 +53,25 @@ const UserManagement = ({ handleLogout }) => {
     setIsModalOpen(true);
   };
 
-  const handleSave = async (userData) => {
+  const handleSave = async (formData) => {
     try {
       let response;
+      const payload = {
+        username: formData.username,
+        email: formData.email,
+        role: formData.role,
+      };
+
+      if (formData.password) {
+        payload.password = formData.password;
+      }
+
       if (editingUser) {
         // Edit user
-        response = await apiCall(`/api/auth/users/${editingUser._id}`, 'PUT', userData);
+        response = await apiCall(`/api/auth/users/${editingUser._id}`, 'PUT', payload);
       } else {
         // Create user
-        response = await apiCall('/api/auth/users', 'POST', userData);
+        response = await apiCall('/api/auth/users', 'POST', payload);
       }
 
       if (response.success) {

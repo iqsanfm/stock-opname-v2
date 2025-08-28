@@ -8,6 +8,7 @@ const UserFormModal = ({ user, onSave, onClose }) => {
     password: '',
     role: 'user',
   });
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const isEditMode = !!user;
 
@@ -16,10 +17,18 @@ const UserFormModal = ({ user, onSave, onClose }) => {
       setFormData({
         username: user.username,
         email: user.email,
-        password: '', // Password is not sent for editing, leave empty
+        password: '',
         role: user.role,
       });
+    } else {
+      setFormData({
+        username: '',
+        email: '',
+        password: '',
+        role: 'user',
+      });
     }
+    setConfirmPassword('');
   }, [user, isEditMode]);
 
   const handleInputChange = (e) => {
@@ -29,6 +38,11 @@ const UserFormModal = ({ user, onSave, onClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (formData.password && formData.password !== confirmPassword) {
+      // A bit of a hack: use window.alert because the Alert component is in the parent
+      window.alert('Password confirmation does not match!');
+      return;
+    }
     onSave(formData);
   };
 
@@ -59,19 +73,6 @@ const UserFormModal = ({ user, onSave, onClose }) => {
               onChange={handleInputChange}
             />
           </div>
-          {!isEditMode && (
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                required
-                value={formData.password}
-                onChange={handleInputChange}
-              />
-            </div>
-          )}
           <div className="form-group">
             <label htmlFor="role">Role</label>
             <select
@@ -85,6 +86,37 @@ const UserFormModal = ({ user, onSave, onClose }) => {
               <option value="admin">Admin</option>
             </select>
           </div>
+
+          <hr />
+
+          {isEditMode ? (
+            <p>Leave password fields blank to keep the current password.</p>
+          ) : null}
+
+          <div className="form-group">
+            <label htmlFor="password">{isEditMode ? 'New Password' : 'Password'}</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              required={!isEditMode} // Only required for new users
+              value={formData.password}
+              onChange={handleInputChange}
+            />
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="confirmPassword">Confirm {isEditMode ? 'New' : ''} Password</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              required={!isEditMode || !!formData.password} // Required if creating or if new password is set
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </div>
+
           <div className="modal-actions">
             <button type="submit" className="btn btn-primary">{isEditMode ? 'Save Changes' : 'Create User'}</button>
             <button type="button" className="btn" onClick={onClose}>Cancel</button>

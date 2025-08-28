@@ -34,30 +34,6 @@ body {
     overflow: hidden;
 }
 
-.auth-tabs {
-    display: flex;
-    background-color: #f1f1f1;
-}
-
-.auth-tab {
-    flex: 1;
-    padding: 15px;
-    cursor: pointer;
-    border: none;
-    background: none;
-    font-size: 1rem;
-    font-weight: 600;
-    color: #aaa;
-    transition: all 0.3s ease;
-    border-bottom: 3px solid transparent;
-}
-
-.auth-tab.active {
-    color: var(--text-color);
-    background-color: var(--container-bg);
-    border-bottom-color: #6a11cb;
-}
-
 .auth-content {
     padding: 30px;
 }
