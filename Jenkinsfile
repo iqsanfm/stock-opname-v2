@@ -16,9 +16,6 @@ pipeline {
                 VITE_API_URL = credentials('VITE_API_URL_CREDENTIAL')
             }
             steps {
-                echo "--- VALIDASI ENDPOINT ---"
-                echo "URL yang terbaca dari credential adalah: ${VITE_API_URL}"
-                echo "--------------------------"
                 script {
                     try {
                         // Membuat file .env.production menggunakan perintah shell
