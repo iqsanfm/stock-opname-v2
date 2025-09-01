@@ -1,8 +1,11 @@
 pipeline {
-    agent any
-
-    tools {
-        docker 'docker'
+    // Menjalankan pipeline di dalam sebuah kontainer yang memiliki Docker CLI
+    // dan bisa berkomunikasi dengan Docker daemon di mesin host.
+    agent {
+        docker {
+            image 'docker:latest'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
     }
 
     environment {
