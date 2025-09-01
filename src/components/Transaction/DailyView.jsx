@@ -58,7 +58,6 @@ const DailyView = ({ hasPermission, handleLogout, transactions, loading, error, 
   const fetchTransactionStats = useCallback(async () => {
     try {
       const response = await apiCall('/api/transactions/statistics');
-      console.log("API Response for /api/transactions/statistics:", response); // Log the response
       if (response.success) {
         const dailyStats = response.data.dailyStats || [];
         let todayCount = 0;

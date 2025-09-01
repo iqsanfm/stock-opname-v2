@@ -89,8 +89,10 @@ function App() {
   }, [handleLogout]);
 
   useEffect(() => {
-    fetchTransactions();
-  }, [fetchTransactions, refreshTransactionsTrigger]); // Dependency on fetchTransactions and trigger
+    if (isAuthenticated) {
+      fetchTransactions();
+    }
+  }, [isAuthenticated, fetchTransactions, refreshTransactionsTrigger]); // Dependency on fetchTransactions and trigger
 
   const triggerTransactionsRefresh = useCallback(() => {
     setRefreshTransactionsTrigger(prev => prev + 1);
