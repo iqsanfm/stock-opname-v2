@@ -305,14 +305,23 @@ const DailyView = ({ hasPermission, handleLogout, transactions, loading, error, 
       return;
     }
 
+    const password = prompt('Untuk konfirmasi final, masukkan password Anda:');
+    if (!password) {
+      showAlert('Password tidak dimasukkan. Penghapusan dibatalkan.', 'info');
+      return;
+    }
+
     try {
-      const response = await apiCall('/api/auth/clear-data', 'POST', { confirm: 'I_UNDERSTAND_AND_WANT_TO_DELETE_ALL_DATA' });
+      const response = await apiCall('/api/auth/clear-data', 'POST', { password: password });
+      
       if (response.success) {
         showAlert('Semua data transaksi harian berhasil dihapus!', 'success');
         // Re-fetch transactions and stats after clearing data
         fetchTransactionStats();
+        triggerTransactionsRefresh(); // Refresh the main transaction list in App.jsx
       } else {
-        showAlert('Gagal menghapus data: ' + response.message, 'error');
+        // Show specific error message from backend
+        showAlert(`Gagal menghapus data: ${response.message}`, 'error');
       }
     } catch (err) {
       if (err.isAuthError) {
