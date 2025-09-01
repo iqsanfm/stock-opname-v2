@@ -3,7 +3,7 @@ import apiCall from '../../services/api';
 import Alert from '../UI/Alert';
 import './StockOpname.css';
 
-const StockOpname = ({ user, hasPermission, handleLogout, activeTab, setTransactions, triggerTransactionsRefresh, opnameData: propOpnameData, setOpnameData: setPropOpnameData }) => {
+const StockOpname = ({ user, hasPermission, handleLogout, activeTab, triggerTransactionsRefresh, opnameData: propOpnameData, setOpnameData: setPropOpnameData }) => {
   const [opnameMonth, setOpnameMonth] = useState('');
   const [newOpnameMonthInput, setNewOpnameMonthInput] = useState(new Date().toISOString().slice(0, 7));
   const [filterSparepart, setFilterSparepart] = useState('');

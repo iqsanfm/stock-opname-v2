@@ -3,7 +3,7 @@ import apiCall from '../../services/api';
 import Alert from '../UI/Alert'; // Import Alert component
 import './DailyView.css';
 
-const DailyView = ({ hasPermission, handleLogout, transactions, setTransactions, loading, error, activeTab, setActiveTab, triggerTransactionsRefresh }) => {
+const DailyView = ({ hasPermission, handleLogout, transactions, loading, error, activeTab, setActiveTab, triggerTransactionsRefresh }) => {
   const [formData, setFormData] = useState({
     tanggal: new Date().toISOString().slice(0, 10),
     sku: '',
