@@ -312,7 +312,7 @@ const DailyView = ({ hasPermission, handleLogout, transactions, loading, error, 
     }
 
     try {
-      const response = await apiCall('/api/auth/clear-data', 'POST', { password: password });
+      const response = await apiCall('/api/auth/clear-data', 'POST', { password: password, confirm: 'I_UNDERSTAND_AND_WANT_TO_DELETE_ALL_DATA' });
       
       if (response.success) {
         showAlert('Semua data transaksi harian berhasil dihapus!', 'success');
