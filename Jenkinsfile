@@ -1,10 +1,14 @@
 pipeline {
     agent any
 
+    tools {
+        docker 'docker'
+    }
+
     environment {
         DOCKER_IMAGE = 'stock-opname-react-v2'
         CONTAINER_NAME = 'stock-opname-app'
-        HOST_PORT = '8080'
+        HOST_PORT = '8090'
         CONTAINER_PORT = '80'
     }
 
