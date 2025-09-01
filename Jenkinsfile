@@ -1,12 +1,6 @@
 pipeline {
-    // Menjalankan pipeline di dalam sebuah kontainer yang memiliki Docker CLI
-    // dan bisa berkomunikasi dengan Docker daemon di mesin host.
-    agent {
-        docker {
-            image 'docker:latest'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
+    // Menjalankan di agent mana pun, dengan asumsi Docker sudah terinstall di sana.
+    agent any
 
     environment {
         DOCKER_IMAGE = 'stock-opname-react-v2'
@@ -18,23 +12,21 @@ pipeline {
     stages {
         stage('Build Docker Image') {
             environment {
-                // Jenkins akan mengambil credential dengan ID 'VITE_API_URL_CREDENTIAL'
-                // dan memasukkan nilainya ke dalam variabel VITE_API_URL.
+                // Mengambil credential dari Jenkins dan memasukkannya ke variabel environment
                 VITE_API_URL = credentials('VITE_API_URL_CREDENTIAL')
             }
             steps {
                 script {
                     try {
-                        // Membuat file .env.production secara dinamis untuk proses build
+                        // Membuat file .env.production menggunakan perintah shell
                         echo "Membuat file .env.production..."
                         sh "echo VITE_API_URL=${VITE_API_URL} > .env.production"
 
-                        // Dockerfile akan menyalin file .env.production ini.
-                        // Vite akan menggunakannya selama 'npm run build'.
+                        // Membangun image Docker menggunakan perintah shell
                         echo "Membangun Docker image: ${DOCKER_IMAGE}"
-                        docker.build(DOCKER_IMAGE, '.')
+                        sh "docker build -t ${DOCKER_IMAGE} ."
                     } finally {
-                        // Membersihkan file .env.production dari workspace setelah build
+                        // Membersihkan file .env.production setelah build selesai
                         echo "Membersihkan file .env.production..."
                         sh "rm -f .env.production"
                     }
@@ -46,17 +38,16 @@ pipeline {
             steps {
                 script {
                     echo "Deploying container ${CONTAINER_NAME}"
-                    def container = docker.container(CONTAINER_NAME)
-                    if (container.exists()) {
-                        echo "Menghentikan dan menghapus container yang sudah ada..."
-                        container.stop()
-                        container.remove()
-                    }
 
+                    // Menghentikan dan menghapus kontainer lama menggunakan perintah shell.
+                    // '|| true' ditambahkan untuk mencegah error jika kontainer tidak ada.
+                    echo "Menghentikan dan menghapus container yang sudah ada..."
+                    sh "docker stop ${CONTAINER_NAME} || true"
+                    sh "docker rm ${CONTAINER_NAME} || true"
+
+                    // Menjalankan kontainer baru menggunakan perintah shell
                     echo "Menjalankan container baru..."
-                    // Variabel lingkungan sudah 'terpanggang' di dalam aplikasi React saat build,
-                    // jadi kita tidak perlu meneruskannya lagi ke 'docker run'.
-                    docker.run("-d -p ${HOST_PORT}:${CONTAINER_PORT} --name ${CONTAINER_NAME}", DOCKER_IMAGE)
+                    sh "docker run -d -p ${HOST_PORT}:${CONTAINER_PORT} --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
                 }
             }
         }

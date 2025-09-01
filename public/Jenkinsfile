@@ -1,0 +1,58 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                script {
+                    echo "Building the Docker image..."
+                    def imageName = "backend-vercel:${env.BUILD_NUMBER}"
+                    sh "docker build -t ${imageName} ."
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                script {
+                    echo "Running tests..."
+                    def imageName = "backend-vercel:${env.BUILD_NUMBER}"
+                    // The current test script is a placeholder.
+                    sh "docker run --rm --env-file ./.env.jenkins ${imageName} npm test"
+                }
+            }
+        }
+        stage('Deploy to Local Docker') {
+            steps {
+                script {
+                    echo "Deploying to local Docker..."
+                    def containerName = "backend-vercel-container"
+                    def imageName = "backend-vercel:${env.BUILD_NUMBER}"
+
+                    // Read and parse the .env.jenkins file to get the port
+                    def envFileContent = readFile('.env.jenkins')
+                    def envProps = [:]
+                    envFileContent.readLines().each { line ->
+                        def parts = line.split('=', 2)
+                        if (parts.size() == 2) {
+                            envProps[parts[0]] = parts[1]
+                        }
+                    }
+                    def port = envProps.get('PORT', '3000') // Default to 3000
+
+                    // Stop and remove any existing container with the same name
+                    sh "docker stop ${containerName} || true"
+                    sh "docker rm ${containerName} || true"
+
+                    // Run the new container with the dynamic port mapping
+                    sh "docker run -d --name ${containerName} -p ${port}:${port} --env-file ./.env.jenkins ${imageName}"
+                }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                echo "Pipeline finished."
+            }
+        }
+    }
+}
