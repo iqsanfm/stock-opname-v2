@@ -60,6 +60,7 @@ function App() {
       if (response.success) {
         const mappedTransactions = response.data.map(t => ({
           id: t.id,
+          itemId: t.itemId ? t.itemId.id : '',
           tanggal: t.transactionDate ? t.transactionDate.split('T')[0] : '',
           sku: t.itemId ? t.itemId.sku : '',
           sparepart: t.itemId ? t.itemId.name : '',

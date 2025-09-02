@@ -142,7 +142,6 @@ const ItemList = ({ user, hasPermission, handleLogout, activeTab }) => {
       if (filterCategory) params.append('category', filterCategory);
 
       const response = await apiCall(`/api/items?${params.toString()}`);
-      console.log("API Response for /api/items:", response); // Log the response
       if (response.success) {
         setItems(Array.isArray(response.data) ? response.data : []);
         setTotalItems(response.pagination && typeof response.pagination.total === 'number' ? response.pagination.total : 0);
@@ -151,7 +150,6 @@ const ItemList = ({ user, hasPermission, handleLogout, activeTab }) => {
       }
 
       const summaryResponse = await apiCall('/api/items/summary');
-      console.log("API Response for /api/items/summary:", summaryResponse); // Log the summary response
       if (summaryResponse.success) {
         setSummaryData(summaryResponse.data || null);
       }
@@ -162,7 +160,7 @@ const ItemList = ({ user, hasPermission, handleLogout, activeTab }) => {
       } else {
         setError('Terjadi kesalahan saat memuat item.');
       }
-      console.error("Failed to fetch items:", err); // More descriptive log
+      console.error("Failed to fetch items:", err);
     } finally {
       setLoading(false);
     }
@@ -190,7 +188,6 @@ const ItemList = ({ user, hasPermission, handleLogout, activeTab }) => {
     if (window.confirm('Yakin ingin menghapus item ini?')) {
       try {
         const response = await apiCall(`/api/items/${itemId}`, 'DELETE');
-        console.log("API Response for DELETE item:", response); // Log delete response
         if (response.success) {
           showAlert('Item berhasil dihapus!', 'success');
           fetchItems(); // Re-fetch items after deletion
@@ -203,7 +200,7 @@ const ItemList = ({ user, hasPermission, handleLogout, activeTab }) => {
         } else {
           showAlert(err.message || 'Terjadi kesalahan saat menghapus item.', 'error');
         }
-        console.error("Failed to delete item:", err); // Log delete error
+        console.error("Failed to delete item:", err);
       }
     }
   };
@@ -226,7 +223,6 @@ const ItemList = ({ user, hasPermission, handleLogout, activeTab }) => {
 
     try {
       const response = await apiCall('/api/items/import-csv', 'POST', formData, true); // true for multipart/form-data
-      console.log("API Response for import CSV:", response); // Log import response
       if (response.success) {
         showAlert(`Import CSV berhasil! ${response.summary.imported} item diimport, ${response.summary.skipped} dilewati.`, 'success');
         fetchItems(); // Re-fetch items after import
@@ -239,7 +235,7 @@ const ItemList = ({ user, hasPermission, handleLogout, activeTab }) => {
       } else {
         showAlert(err.message || 'Terjadi kesalahan saat import CSV.', 'error');
       }
-      console.error("Failed to import CSV:", err); // Log import error
+      console.error("Failed to import CSV:", err);
     }
     event.target.value = ''; // Reset input
   };
@@ -339,11 +335,11 @@ const ItemList = ({ user, hasPermission, handleLogout, activeTab }) => {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={hasPermission('admin') ? "8" : "7"}>Memuat item... (Loading: {loading.toString()})</td></tr>
+                <tr><td colSpan={hasPermission('admin') ? "8" : "7"}>Memuat item...</td></tr>
               ) : error ? (
                 <tr><td colSpan={hasPermission('admin') ? "8" : "7"} style={{ color: 'red' }}>Error: {error}</td></tr>
               ) : items.length === 0 ? (
-                <tr><td colSpan={hasPermission('admin') ? "8" : "7"}>Tidak ada item ditemukan. (Items length: {items.length})</td></tr>
+                <tr><td colSpan={hasPermission('admin') ? "8" : "7"}>Tidak ada item ditemukan.</td></tr>
               ) : (
                 items.map(item => (
                   <tr key={item._id}>
