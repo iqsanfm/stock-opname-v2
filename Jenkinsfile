@@ -3,9 +3,9 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'stock-opname-react-v2'
-        CONTAINER_NAME = 'stock-opname-app'
-        HOST_PORT = '8090'
+        DOCKER_IMAGE = 'backend-vercel'
+        CONTAINER_NAME = 'backend-vercel-container'
+        HOST_PORT = '5050'
         CONTAINER_PORT = '80'
     }
 
@@ -22,9 +22,9 @@ pipeline {
                         echo "Membuat file .env.production..."
                         sh "echo VITE_API_URL=${VITE_API_URL} > .env.production"
 
-                        // Membangun image Docker menggunakan perintah shell
-                        echo "Membangun Docker image: ${DOCKER_IMAGE}"
-                        sh "docker build -t ${DOCKER_IMAGE} ."
+                        // Membangun image Docker menggunakan perintah shell dan tag BUILD_NUMBER
+                        echo "Membangun Docker image: ${DOCKER_IMAGE}:${BUILD_NUMBER}"
+                        sh "docker build -t ${DOCKER_IMAGE}:${BUILD_NUMBER} ."
                     } finally {
                         // Membersihkan file .env.production setelah build selesai
                         echo "Membersihkan file .env.production..."
@@ -37,12 +37,16 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Hentikan kontainer lama jika ada (|| true agar tidak error jika kontainer tidak ada)
-                    sh 'docker stop backend-vercel-container || true'
-                    // Hapus kontainer lama jika ada
-                    sh 'docker rm backend-vercel-container || true'
-                    // Jalankan kontainer baru dengan restart policy
-                    sh 'docker run -d -p 5050:5050 --restart always --name backend-vercel-container backend-vercel:${BUILD_NUMBER}'
+                    echo "Deploying container ${CONTAINER_NAME}"
+
+                    // Menghentikan dan menghapus kontainer lama menggunakan perintah shell.
+                    echo "Menghentikan dan menghapus container yang sudah ada..."
+                    sh "docker stop ${CONTAINER_NAME} || true"
+                    sh "docker rm ${CONTAINER_NAME} || true"
+
+                    // Menjalankan kontainer baru menggunakan perintah shell dengan restart policy
+                    echo "Menjalankan container baru..."
+                    sh "docker run -d -p ${HOST_PORT}:${CONTAINER_PORT} --restart always --name ${CONTAINER_NAME} ${DOCKER_IMAGE}:${BUILD_NUMBER}"
                 }
             }
         }
