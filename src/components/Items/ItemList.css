@@ -5,6 +5,12 @@
   width: 100%;
 }
 
+.table-responsive-container {
+  overflow-x: auto; /* Enable horizontal scrolling */
+  width: 100%; /* Ensure it takes full width */
+  margin-bottom: 20px; /* Add some space below the table */
+}
+
 /* Action buttons in table */
 .item-action-buttons {
   display: flex;
@@ -53,33 +59,48 @@
 
 /* Default column widths for ItemList Table */
 .item-col-sku { width: 80px; }
-.item-col-nama-barang { width: 150px; }
-.item-col-jenis { width: 80px; }
+.item-col-nama-barang { width: 200px; }
+.item-col-jenis { width: 120px; }
 .item-col-merk { width: 80px; }
-.item-col-unit { width: 70px; }
+.item-col-unit { width: 70px; } /* Unit Jual */
+.item-col-stock-unit { width: 80px; }
+.item-col-consumption-unit { width: 80px; }
+.item-col-conversion-factor { width: 90px; }
 .item-col-stock { width: 70px; }
-.item-col-harga-dasar { width: 120px; text-align: right; }
+.item-col-harga-dasar { width: 130px; text-align: right; }
+.item-col-average-price { width: 130px; text-align: right; }
+.item-col-total-value { width: 160px; text-align: right; }
 .item-col-actions { width: 120px; }
 
 /* Responsive Design for ItemList Table */
 @media (max-width: 768px) {
   .item-col-sku { width: 70px; }
-  .item-col-nama-barang { width: 120px; }
-  .item-col-jenis { width: 70px; }
+  .item-col-nama-barang { width: 170px; }
+  .item-col-jenis { width: 100px; }
   .item-col-merk { width: 70px; }
   .item-col-unit { width: 60px; }
+  .item-col-stock-unit { width: 70px; }
+  .item-col-consumption-unit { width: 70px; }
+  .item-col-conversion-factor { width: 80px; }
   .item-col-stock { width: 60px; }
-  .item-col-harga-dasar { width: 100px; }
+  .item-col-harga-dasar { width: 110px; }
+  .item-col-average-price { width: 110px; }
+  .item-col-total-value { width: 140px; }
   .item-col-actions { width: 100px; }
 }
 
 @media (max-width: 480px) {
   .item-col-sku { width: 60px; }
-  .item-col-nama-barang { width: 100px; }
-  .item-col-jenis { width: 60px; }
+  .item-col-nama-barang { width: 140px; }
+  .item-col-jenis { width: 90px; }
   .item-col-merk { width: 60px; }
   .item-col-unit { width: 50px; }
+  .item-col-stock-unit { width: 60px; }
+  .item-col-consumption-unit { width: 60px; }
+  .item-col-conversion-factor { width: 70px; }
   .item-col-stock { width: 50px; }
-  .item-col-harga-dasar { width: 90px; }
+  .item-col-harga-dasar { width: 100px; }
+  .item-col-average-price { width: 100px; }
+  .item-col-total-value { width: 120px; }
   .item-col-actions { width: 90px; }
 }

@@ -40,17 +40,18 @@ const apiCall = async (endpoint, method = 'GET', data = null, isFormData = false
 
     // Check if response is ok before trying to parse JSON
     if (!response.ok) {
-      let errorMessage = 'API Error';
-      try {
-        const errorResult = await response.json();
-        errorMessage = errorResult.message || errorMessage;
-      } catch (parseError) {
-        // If we can't parse JSON, use status text
-        errorMessage = response.statusText || errorMessage;
-      }
-      
-      const error = new Error(errorMessage);
+      const error = new Error('API request failed');
       error.statusCode = response.status;
+      try {
+        // Try to parse the error body
+        error.body = await response.json();
+        // Use the message from the body if available, otherwise use status text
+        error.message = error.body.message || response.statusText;
+      } catch (parseError) {
+        // If parsing fails, the body is null
+        error.body = null;
+        error.message = response.statusText || 'API Error';
+      }
       throw error;
     }
 

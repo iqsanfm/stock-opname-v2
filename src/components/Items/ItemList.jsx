@@ -11,6 +11,9 @@ const ItemFormModal = ({ show, onClose, item, onSave, handleLogout }) => {
     brand: '',
     unit: '',
     basePrice: '',
+    stockUnit: '',
+    consumptionUnit: '',
+    conversionFactor: 1,
   });
   const [alert, setAlert] = useState({ message: '', type: '' });
 
@@ -23,6 +26,9 @@ const ItemFormModal = ({ show, onClose, item, onSave, handleLogout }) => {
         brand: item.brand || '',
         unit: item.unit || '',
         basePrice: item.basePrice || '',
+        stockUnit: item.stockUnit || '',
+        consumptionUnit: item.consumptionUnit || '',
+        conversionFactor: item.conversionFactor || 1,
       });
     } else {
       setFormData({
@@ -32,6 +38,9 @@ const ItemFormModal = ({ show, onClose, item, onSave, handleLogout }) => {
         brand: '',
         unit: '',
         basePrice: '',
+        stockUnit: '',
+        consumptionUnit: '',
+        conversionFactor: 1,
       });
     }
   }, [item]);
@@ -63,7 +72,14 @@ const ItemFormModal = ({ show, onClose, item, onSave, handleLogout }) => {
     } catch (err) {
       if (err.isAuthError) {
         handleLogout();
+        return; // Stop execution after logout
+      }
+
+      // Check for specific backend error response
+      if (err.statusCode === 400 && err.body && err.body.message) {
+        showAlert(err.body.message, 'error');
       } else {
+        // Fallback for other errors
         showAlert(err.message || 'Terjadi kesalahan saat menyimpan item.', 'error');
       }
     }
@@ -94,9 +110,24 @@ const ItemFormModal = ({ show, onClose, item, onSave, handleLogout }) => {
             <input type="text" id="brand" name="brand" value={formData.brand} onChange={handleChange} />
           </div>
           <div className="form-group">
-            <label htmlFor="unit">Unit</label>
-            <input type="text" id="unit" name="unit" value={formData.unit} onChange={handleChange} />
+            <label htmlFor="unit">Unit Jual</label>
+            <input type="text" id="unit" name="unit" value={formData.unit} onChange={handleChange} placeholder="e.g., porsi, gelas, pcs" />
           </div>
+          <hr />
+          <p className="form-hint">Isi bagian di bawah ini jika item ini adalah bahan baku atau memiliki konversi unit.</p>
+          <div className="form-group">
+            <label htmlFor="stockUnit">Unit Stok</label>
+            <input type="text" id="stockUnit" name="stockUnit" value={formData.stockUnit} onChange={handleChange} placeholder="e.g., kg, liter, box" />
+          </div>
+          <div className="form-group">
+            <label htmlFor="consumptionUnit">Unit Konsumsi</label>
+            <input type="text" id="consumptionUnit" name="consumptionUnit" value={formData.consumptionUnit} onChange={handleChange} placeholder="e.g., gram, ml, pcs" />
+          </div>
+          <div className="form-group">
+            <label htmlFor="conversionFactor">Faktor Konversi</label>
+            <input type="number" id="conversionFactor" name="conversionFactor" value={formData.conversionFactor} onChange={handleChange} step="0.001" min="0" />
+          </div>
+          <hr />
           <div className="form-group">
             <label htmlFor="basePrice">Harga Dasar</label>
             <input type="number" id="basePrice" name="basePrice" value={formData.basePrice} onChange={handleChange} step="0.01" />
@@ -320,49 +351,61 @@ const ItemList = ({ user, hasPermission, handleLogout, activeTab }) => {
         </div>
 
         <div className="table-container">
-          <table id="itemsTable">
-            <thead>
-              <tr>
-                <th className="item-col-sku">SKU</th>
-                <th className="item-col-nama-barang">Nama Barang</th>
-                <th className="item-col-jenis">Jenis</th>
-                <th className="item-col-merk">Merk</th>
-                <th className="item-col-unit">Unit</th>
-                <th className="item-col-stock">Stock</th>
-                <th className="item-col-harga-dasar">Harga Dasar</th>
-                {hasPermission('admin') && <th className="item-col-actions">Actions</th>}
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <tr><td colSpan={hasPermission('admin') ? "8" : "7"}>Memuat item...</td></tr>
-              ) : error ? (
-                <tr><td colSpan={hasPermission('admin') ? "8" : "7"} style={{ color: 'red' }}>Error: {error}</td></tr>
-              ) : items.length === 0 ? (
-                <tr><td colSpan={hasPermission('admin') ? "8" : "7"}>Tidak ada item ditemukan.</td></tr>
-              ) : (
-                items.map(item => (
-                  <tr key={item._id}>
-                    <td className="item-col-sku">{item.sku}</td>
-                    <td className="item-col-nama-barang">{item.name}</td>
-                    <td className="item-col-jenis">{item.category || '-'}</td>
-                    <td className="item-col-merk">{item.brand || '-'}</td>
-                    <td className="item-col-unit">{item.unit}</td>
-                    <td className="item-col-stock">{item.currentStock}</td>
-                    <td className="item-col-harga-dasar">{formatCurrency(item.basePrice)}</td>
-                    {hasPermission('admin') && (
-                      <td className="item-col-actions">
-                        <div className="item-action-buttons"> {/* New wrapper div */}
-                          <button className="btn btn-warning btn-sm" onClick={() => handleEditItem(item)}>Edit</button>
-                          <button className="btn btn-danger btn-sm" onClick={() => handleDeleteItem(item._id)}>Hapus</button>
-                        </div>
-                      </td>
-                    )}
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+          <div className="table-responsive-container">
+            <table id="itemsTable">
+              <thead>
+                <tr>
+                  <th className="item-col-sku">SKU</th>
+                  <th className="item-col-nama-barang">Nama Barang</th>
+                  <th className="item-col-jenis">Jenis</th>
+                  <th className="item-col-merk">Merk</th>
+                  <th className="item-col-unit">Unit Jual</th>
+                  <th className="item-col-stock-unit">Unit Stok</th>
+                  <th className="item-col-consumption-unit">Unit Konsumsi</th>
+                  <th className="item-col-conversion-factor">Faktor Konversi</th>
+                  <th className="item-col-stock">Stock</th>
+                  <th className="item-col-harga-dasar">Harga Dasar</th>
+                  <th className="item-col-average-price">Harga Rata-rata</th>
+                  <th className="item-col-total-value">Nilai Total Stok</th>
+                  {hasPermission('admin') && <th className="item-col-actions">Actions</th>}
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr><td colSpan={hasPermission('admin') ? "13" : "12"}>Memuat item...</td></tr>
+                ) : error ? (
+                  <tr><td colSpan={hasPermission('admin') ? "13" : "12"} style={{ color: 'red' }}>Error: {error}</td></tr>
+                ) : items.length === 0 ? (
+                  <tr><td colSpan={hasPermission('admin') ? "13" : "12"}>Tidak ada item ditemukan.</td></tr>
+                ) : (
+                  items.map(item => (
+                    <tr key={item._id}>
+                      <td className="item-col-sku">{item.sku}</td>
+                      <td className="item-col-nama-barang">{item.name}</td>
+                      <td className="item-col-jenis">{item.category || '-'}</td>
+                      <td className="item-col-merk">{item.brand || '-'}</td>
+                      <td className="item-col-unit">{item.unit || '-'}</td>
+                      <td className="item-col-stock-unit">{item.stockUnit || '-'}</td>
+                      <td className="item-col-consumption-unit">{item.consumptionUnit || '-'}</td>
+                      <td className="item-col-conversion-factor">{item.conversionFactor || '-'}</td>
+                      <td className="item-col-stock">{item.currentStock}</td>
+                      <td className="item-col-harga-dasar">{formatCurrency(item.basePrice)}</td>
+                      <td className="item-col-average-price">{formatCurrency(item.averagePrice)}</td>
+                      <td className="item-col-total-value">{formatCurrency(item.totalValue)}</td>
+                      {hasPermission('admin') && (
+                        <td className="item-col-actions">
+                          <div className="item-action-buttons"> {/* New wrapper div */}
+                            <button className="btn btn-warning btn-sm" onClick={() => handleEditItem(item)}>Edit</button>
+                            <button className="btn btn-danger btn-sm" onClick={() => handleDeleteItem(item._id)}>Hapus</button>
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Pagination */}

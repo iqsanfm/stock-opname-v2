@@ -1,0 +1,90 @@
+.recipe-actions {
+  white-space: nowrap;
+}
+
+.recipe-actions button {
+  margin-right: 5px;
+}
+
+.modal-content.large {
+  max-width: 800px;
+}
+
+.ingredient-row {
+  display: grid;
+  grid-template-columns: 350px 200px 80px; /* Item, Quantity, Button with fixed widths */
+  column-gap: 30px; /* Increased spacing between columns */
+  align-items: center; /* Vertically align items in the grid row */
+  margin-bottom: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px; /* Add some margin between form groups */
+}
+
+.form-group label {
+  /* margin-bottom: 5px; Removed margin-bottom */
+  line-height: 1.2; /* Consistent line height */
+  padding-top: 0; /* Remove default padding */
+  padding-bottom: 0; /* Remove default padding */
+}
+
+.ingredient-row .form-group {
+  /* flex properties removed as grid is used */
+  align-self: start; /* Align form-group to the start of its grid cell */
+  width: 100%; /* Ensure it fills its grid cell */
+  padding: 5px; /* Add internal padding */
+}
+
+.ingredient-row .quantity-group {
+  /* flex properties removed as grid is used */
+  display: flex; /* Keep flex for internal alignment of quantity input and unit */
+  align-items: flex-start; /* Align internal content to the top */
+  gap: 5px;
+  align-self: start; /* Align quantity-group to the start of its grid cell */
+  width: 100%; /* Ensure it fills its grid cell */
+  padding: 5px; /* Add internal padding */
+}
+
+
+.ingredient-row .quantity-input-wrapper {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  gap: 5px;
+}
+
+.ingredient-row .quantity-group input[type="number"] {
+  flex-grow: 1;
+  width: auto;
+}
+
+.ingredient-row .unit-display {
+  white-space: nowrap;
+  font-size: 0.9em;
+  color: #666;
+  padding-bottom: 0;
+}
+
+.ingredient-row .btn-danger {
+  /* flex properties removed as grid is used */
+  padding: 8px 8px; /* Increased padding for the button */
+  font-size: 0.8em;
+  width: 80px; /* Fixed width for the button */
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+/* Ensure select and input fields fill their containers */
+.ingredient-row select,
+.ingredient-row input[type="text"],
+.ingredient-row input[type="number"] {
+  width: 100%;
+  box-sizing: border-box;
+  height: 38px; /* Set a consistent height for inputs and selects */
+  /* vertical-align: top; Removed vertical-align */
+  line-height: 1.2; /* Consistent line height */
+  padding-top: 0; /* Remove default padding */
+  padding-bottom: 0; /* Remove default padding */
+}

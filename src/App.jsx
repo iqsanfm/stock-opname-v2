@@ -7,6 +7,7 @@ import StockOpname from './components/Opname/StockOpname';
 import ItemList from './components/Items/ItemList';
 import ProfileSettings from './components/Auth/ProfileSettings';
 import UserManagement from './components/Admin/UserManagement';
+import RecipeManagement from './components/Recipes/RecipeManagement';
 import apiCall from './services/api';
 
 function App() {
@@ -159,6 +160,13 @@ function App() {
         return <UserManagement
           handleLogout={handleLogout}
         />;
+      case 'recipes':
+        return <RecipeManagement
+          user={user}
+          hasPermission={hasPermission}
+          handleLogout={handleLogout}
+          activeTab={activeTab}
+        />;
       default:
         return <DailyView 
           hasPermission={hasPermission} 
@@ -214,6 +222,14 @@ function App() {
               Manajemen Pengguna
             </button>
           )}
+          {hasPermission('admin') && (
+            <button 
+              className={`tab-button ${activeTab === 'recipes' ? 'active' : ''}`}
+              onClick={() => setActiveTab('recipes')}
+            >
+              Manajemen Resep
+            </button>
+          )}
           <button 
             className={`tab-button ${activeTab === 'profile-settings' ? 'active' : ''}`}
             onClick={() => setActiveTab('profile-settings')}
@@ -237,6 +253,5 @@ function App() {
     </div>
   );
 }
-
 
 export default App;
