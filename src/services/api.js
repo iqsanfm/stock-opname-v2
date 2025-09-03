@@ -47,7 +47,7 @@ const apiCall = async (endpoint, method = 'GET', data = null, isFormData = false
         error.body = await response.json();
         // Use the message from the body if available, otherwise use status text
         error.message = error.body.message || response.statusText;
-      } catch (parseError) {
+      } catch (_parseError) {
         // If parsing fails, the body is null
         error.body = null;
         error.message = response.statusText || 'API Error';
@@ -59,7 +59,7 @@ const apiCall = async (endpoint, method = 'GET', data = null, isFormData = false
     let result;
     try {
       result = await response.json();
-    } catch (parseError) {
+    } catch (_parseError) {
       // If response is ok but not JSON, return success with empty data
       console.warn(`API response for ${endpoint} is not JSON, returning empty data`);
       return { success: true, data: null };

@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import apiCall from '../../services/api';
 import Alert from '../UI/Alert'; // Import Alert component
-import './DailyView.css';
 
-const DailyView = ({ hasPermission, handleLogout, transactions, loading, error, activeTab, setActiveTab, triggerTransactionsRefresh }) => {
+const DailyView = ({ hasPermission, handleLogout, transactions, loading, error, activeTab, setActiveTab, triggerTransactionsRefresh, triggerItemsRefresh }) => {
   const [formData, setFormData] = useState({
     tanggal: new Date().toISOString().slice(0, 10),
     sku: '',
@@ -197,6 +196,7 @@ const DailyView = ({ hasPermission, handleLogout, transactions, loading, error, 
         resetForm();
         fetchTransactionStats(); // Update stats after transaction
         triggerTransactionsRefresh(); // Trigger re-fetch in App.jsx
+        triggerItemsRefresh();
       } else {
         showAlert('Gagal menyimpan transaksi: ' + response.message, 'error');
       }
@@ -239,6 +239,7 @@ const DailyView = ({ hasPermission, handleLogout, transactions, loading, error, 
           // Re-fetch transactions and stats
           fetchTransactionStats();
           triggerTransactionsRefresh(); // Trigger re-fetch in App.jsx
+        triggerItemsRefresh();
         } else {
           showAlert('Gagal menghapus transaksi: ' + response.message, 'error');
         }
@@ -362,37 +363,37 @@ const DailyView = ({ hasPermission, handleLogout, transactions, loading, error, 
       {alert.message && <Alert message={alert.message} type={alert.type} onClose={() => setAlert({ message: '', type: '' })} />}
 
       {/* Daily Statistics */}
-      <div className="stats-grid">
-        <div className="stat-card">
-          <div className="stat-value">{transactionStats.todayCount}</div>
-          <div className="stat-label">Transaksi Hari Ini</div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+        <div className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-6 rounded-xl text-center shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 ease-in-out">
+          <div className="text-3xl font-bold">{transactionStats.todayCount}</div>
+          <div className="text-sm">Transaksi Hari Ini</div>
         </div>
-        <div className="stat-card">
-          <div className="stat-value">{transactionStats.totalIn}</div>
-          <div className="stat-label">Total Barang Masuk</div>
+        <div className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-6 rounded-xl text-center shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 ease-in-out">
+          <div className="text-3xl font-bold">{transactionStats.totalIn}</div>
+          <div className="text-sm">Total Barang Masuk</div>
         </div>
-        <div className="stat-card">
-          <div className="stat-value">{transactionStats.totalOut}</div>
-          <div className="stat-label">Total Barang Keluar</div>
+        <div className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-6 rounded-xl text-center shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 ease-in-out">
+          <div className="text-3xl font-bold">{transactionStats.totalOut}</div>
+          <div className="text-sm">Total Barang Keluar</div>
         </div>
-        <div className="stat-card">
-          <div className="stat-value">{formatCurrency(transactionStats.totalValue)}</div>
-          <div className="stat-label">Nilai Transaksi</div>
+        <div className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-6 rounded-xl text-center shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 ease-in-out">
+          <div className="text-3xl font-bold">{formatCurrency(transactionStats.totalValue)}</div>
+          <div className="text-sm">Nilai Transaksi</div>
         </div>
       </div>
 
       {/* Daily Transaction Form */}
-      <div className="form-section">
-        <h2>{editingTransactionId ? 'Edit Transaksi' : 'Input Transaksi Harian'}</h2>
-        <form id="dailyTransactionForm" onSubmit={handleSubmit}>
-          <div className="form-grid">
-            <div className="form-group">
-              <label htmlFor="tanggal">Tanggal Transaksi</label>
-              <input type="date" id="tanggal" name="tanggal" required value={formData.tanggal} onChange={handleInputChange} />
+      <div className="bg-white p-8 rounded-xl shadow-lg mb-8">
+        <h2 className="text-2xl font-bold mb-6 text-gray-800">{editingTransactionId ? 'Edit Transaksi' : 'Input Transaksi Harian'}</h2>
+        <form id="dailyTransactionForm" onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div>
+              <label htmlFor="tanggal" className="block text-sm font-medium text-gray-700">Tanggal Transaksi</label>
+              <input type="date" id="tanggal" name="tanggal" required value={formData.tanggal} onChange={handleInputChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
             </div>
-            <div className="form-group">
-              <label htmlFor="sku_daily">SKU</label>
-              <input type="text" id="sku_daily" name="sku" required placeholder="Contoh: LP001" value={formData.sku} onChange={handleSkuChange} list="skuList" />
+            <div>
+              <label htmlFor="sku_daily" className="block text-sm font-medium text-gray-700">SKU</label>
+              <input type="text" id="sku_daily" name="sku" required placeholder="Contoh: LP001" value={formData.sku} onChange={handleSkuChange} list="skuList" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
               <datalist id="skuList">
                 {skuSuggestions.map(item => (
                   <option key={item.sku} value={item.sku}>
@@ -401,63 +402,63 @@ const DailyView = ({ hasPermission, handleLogout, transactions, loading, error, 
                 ))}
               </datalist>
             </div>
-            <div className="form-group">
-              <label htmlFor="sparepart_daily">Nama Barang</label>
-              <input type="text" id="sparepart_daily" name="sparepart" required placeholder="Contoh: Laptop" value={formData.sparepart} onChange={handleInputChange} />
+            <div>
+              <label htmlFor="sparepart_daily" className="block text-sm font-medium text-gray-700">Nama Barang</label>
+              <input type="text" id="sparepart_daily" name="sparepart" required placeholder="Contoh: Laptop" value={formData.sparepart} onChange={handleInputChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
             </div>
-            <div className="form-group">
-              <label htmlFor="jenis_daily">Jenis/Kategori</label>
-              <input type="text" id="jenis_daily" name="jenis" required placeholder="Contoh: Elektronik" value={formData.jenis} onChange={handleInputChange} />
+            <div>
+              <label htmlFor="jenis_daily" className="block text-sm font-medium text-gray-700">Jenis/Kategori</label>
+              <input type="text" id="jenis_daily" name="jenis" required placeholder="Contoh: Elektronik" value={formData.jenis} onChange={handleInputChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
             </div>
-            <div className="form-group">
-              <label htmlFor="merk_daily">Merk</label>
-              <input type="text" id="merk_daily" name="merk" required placeholder="Contoh: HP" value={formData.merk} onChange={handleInputChange} />
+            <div>
+              <label htmlFor="merk_daily" className="block text-sm font-medium text-gray-700">Merk</label>
+              <input type="text" id="merk_daily" name="merk" required placeholder="Contoh: HP" value={formData.merk} onChange={handleInputChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
             </div>
-            <div className="form-group">
-              <label htmlFor="tipe_transaksi">Tipe Transaksi</label>
-              <select id="tipe_transaksi" name="tipe_transaksi" required value={formData.tipe_transaksi} onChange={handleInputChange}>
+            <div>
+              <label htmlFor="tipe_transaksi" className="block text-sm font-medium text-gray-700">Tipe Transaksi</label>
+              <select id="tipe_transaksi" name="tipe_transaksi" required value={formData.tipe_transaksi} onChange={handleInputChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 <option value="">Pilih Tipe</option>
                 <option value="masuk">Barang Masuk</option>
                 <option value="keluar">Barang Keluar</option>
                 <option value="stock_awal">Stock Awal</option>
               </select>
             </div>
-            <div className="form-group">
-              <label htmlFor="jumlah">Jumlah</label>
-              <input type="number" id="jumlah" name="jumlah" min="0" required value={formData.jumlah} onChange={handleInputChange} />
+            <div>
+              <label htmlFor="jumlah" className="block text-sm font-medium text-gray-700">Jumlah</label>
+              <input type="number" id="jumlah" name="jumlah" min="0" required value={formData.jumlah} onChange={handleInputChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
             </div>
-            <div className="form-group" id="hargaGroup">
-              <label htmlFor="harga">Harga per Unit</label>
-              <input type="number" id="harga" name="harga" min="0" step="0.01" value={formData.harga} onChange={handleInputChange} />
+            <div id="hargaGroup">
+              <label htmlFor="harga" className="block text-sm font-medium text-gray-700">Harga per Unit</label>
+              <input type="number" id="harga" name="harga" min="0" step="0.01" value={formData.harga} onChange={handleInputChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
             </div>
-            <div className="form-group">
-              <label htmlFor="keterangan">Keterangan</label>
-              <input type="text" id="keterangan" name="keterangan" placeholder="Opsional" value={formData.keterangan} onChange={handleInputChange} />
+            <div>
+              <label htmlFor="keterangan" className="block text-sm font-medium text-gray-700">Keterangan</label>
+              <input type="text" id="keterangan" name="keterangan" placeholder="Opsional" value={formData.keterangan} onChange={handleInputChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
             </div>
           </div>
-          <div className="actions">
-            <button type="submit" className="daily-view-btn btn-success btn-form-action">{editingTransactionId ? 'Perbarui Transaksi' : 'Simpan Transaksi'}</button>
-            <button type="button" className="daily-view-btn btn-form-action" onClick={resetForm}>Reset Form</button>
+          <div className="flex gap-4 flex-wrap items-center mt-6">
+            <button type="submit" className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">{editingTransactionId ? 'Perbarui Transaksi' : 'Simpan Transaksi'}</button>
+            <button type="button" className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" onClick={resetForm}>Reset Form</button>
           </div>
         </form>
       </div>
 
       {/* Daily Transactions Table */}
-      <div className="form-section">
-        <h2>Transaksi Harian</h2>
-        <div className="controls-section">
-          <div className="filter-section">
-            <div className="form-group">
-              <label htmlFor="filterDate">Filter Tanggal</label>
-              <input type="date" id="filterDate" name="date" value={filters.date} onChange={handleFilterChange} />
+      <div className="bg-white p-8 rounded-xl shadow-lg mb-8">
+        <h2 className="text-2xl font-bold mb-6 text-gray-800">Transaksi Harian</h2>
+        <div className="flex flex-wrap justify-between items-start mb-6 gap-5">
+          <div className="flex flex-wrap gap-4 items-end">
+            <div className="mb-4">
+              <label htmlFor="filterDate" className="block text-gray-700 text-sm font-bold mb-2">Filter Tanggal</label>
+              <input type="date" id="filterDate" name="date" value={filters.date} onChange={handleFilterChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
             </div>
-            <div className="form-group">
-              <label htmlFor="filterSparepart">Filter Nama Barang</label>
-              <input type="text" id="filterSparepart" name="sparepart" placeholder="Cari nama barang..." value={filters.sparepart} onChange={handleFilterChange} />
+            <div className="mb-4">
+              <label htmlFor="filterSparepart" className="block text-gray-700 text-sm font-bold mb-2">Filter Nama Barang</label>
+              <input type="text" id="filterSparepart" name="sparepart" placeholder="Cari nama barang..." value={filters.sparepart} onChange={handleFilterChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
             </div>
-            <div className="form-group">
-              <label htmlFor="filterType">Filter Tipe</label>
-              <select id="filterType" name="type" value={filters.type} onChange={handleFilterChange}>
+            <div className="mb-4">
+              <label htmlFor="filterType" className="block text-gray-700 text-sm font-bold mb-2">Filter Tipe</label>
+              <select id="filterType" name="type" value={filters.type} onChange={handleFilterChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                 <option value="">Semua Tipe</option>
                 <option value="stock_awal">Stock Awal</option>
                 <option value="masuk">Barang Masuk</option>
@@ -466,68 +467,69 @@ const DailyView = ({ hasPermission, handleLogout, transactions, loading, error, 
             </div>
           </div>
           
-          <div className="actions">
-            <div className="report-controls">
-              <div className="form-group">
-                <label htmlFor="reportMonth">Bulan Laporan</label>
+          <div className="flex gap-4 flex-wrap items-center">
+            <div className="flex flex-wrap gap-4 items-center">
+              <div>
+                <label htmlFor="reportMonth" className="block text-gray-700 text-sm font-bold mb-2">Bulan Laporan</label>
                 <input
                   type="month"
                   id="reportMonth"
                   value={reportMonth}
                   onChange={(e) => setReportMonth(e.target.value)}
                   placeholder="Pilih bulan"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 />
               </div>
-              <button className="daily-view-btn btn-info" onClick={exportDailyTransactions}>Export Transaksi</button>
-              <button className="daily-view-btn btn-warning" onClick={generateMonthlyReport}>Generate Laporan Bulanan</button>
-              {hasPermission('admin') && <button className="daily-view-btn btn-danger" onClick={deleteAllData}>🗑️ Hapus Semua Data</button>}
+              <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md font-medium mt-7" onClick={exportDailyTransactions}>Export Transaksi</button>
+              <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-md font-medium mt-7" onClick={generateMonthlyReport}>Generate Laporan Bulanan</button>
+              {hasPermission('admin') && <button className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md font-medium mt-7" onClick={deleteAllData}>🗑️ Hapus Semua Data</button>}
             </div>
           </div>
         </div>
 
-        <div className="table-container">
-          <table id="dailyTransactionsTable">
-            <thead>
+        <div className="overflow-x-auto rounded-lg shadow-md">
+          <table id="dailyTransactionsTable" className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-indigo-600 text-white">
               <tr>
-                <th className="col-tanggal">Tanggal</th>
-                <th className="col-sku">SKU</th>
-                <th className="col-nama-barang">Nama Barang</th>
-                <th className="col-jenis">Jenis</th>
-                <th className="col-merk">Merk</th>
-                <th className="col-tipe text-center">Tipe</th>
-                <th className="col-jumlah text-right">Jumlah</th>
-                <th className="col-harga text-right">Harga</th>
-                <th className="col-total text-right">Total</th>
-                <th className="col-keterangan">Keterangan</th>
-                <th className="col-user">User</th>
-                <th className="col-actions text-center">Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-20">Tanggal</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-20">SKU</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-32">Nama Barang</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-20">Jenis</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-20">Merk</th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider w-18">Tipe</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-white uppercase tracking-wider w-18">Jumlah</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-white uppercase tracking-wider w-24">Harga</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-white uppercase tracking-wider w-32">Total</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-36">Keterangan</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-24">User</th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider w-32">Actions</th>
               </tr>
             </thead>
             <tbody id="dailyTransactionsBody">
               {loading ? (
-                <tr><td colSpan="12">Memuat transaksi...</td></tr>
+                <tr><td colSpan="12" className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-center">Memuat transaksi...</td></tr>
               ) : error ? (
-                <tr><td colSpan="12" style={{ color: 'red' }}>Error: {error}</td></tr>
+                <tr><td colSpan="12" className="px-6 py-4 whitespace-nowrap text-sm text-red-600 text-center">Error: {error}</td></tr>
               ) : filteredTransactions.length === 0 ? (
-                <tr><td colSpan="12">Tidak ada transaksi ditemukan.</td></tr>
+                <tr><td colSpan="12" className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-center">Tidak ada transaksi ditemukan.</td></tr>
               ) : (
                 filteredTransactions.map(t => (
                   <tr key={t.id}>
-                    <td>{t.tanggal}</td>
-                    <td>{t.sku}</td>
-                    <td>{t.sparepart}</td>
-                    <td>{t.jenis}</td>
-                    <td>{t.merk}</td>
-                    <td className="text-center"><span className={`badge ${t.tipe_transaksi}`}>{t.tipe_transaksi === 'stock_awal' ? 'STOCK' : (t.tipe_transaksi ? t.tipe_transaksi.replace('_', ' ').toUpperCase() : '')}</span></td>
-                    <td className="text-right">{t.jumlah}</td>
-                    <td className="text-right">{formatCurrency(t.harga)}</td>
-                    <td className="col-total text-right">{formatCurrency(t.total)}</td>
-                    <td className="col-keterangan">{t.keterangan}</td>
-                    <td>{t.user}</td>
-                    <td className="text-center">
-                      <div className="button-group">
-                        {hasPermission('admin') && <button className="btn daily-view-btn-sm btn-warning" onClick={() => handleEdit(t)}>Edit</button>}
-                        {hasPermission('admin') && <button className="btn daily-view-btn-sm btn-danger" onClick={() => handleDelete(t.id)}>Hapus</button>}
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis w-20">{t.tanggal}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis w-20">{t.sku}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis w-32">{t.sparepart}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis w-20">{t.jenis}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis w-20">{t.merk}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis w-18 text-center"><span className={`badge ${t.tipe_transaksi}`}>{t.tipe_transaksi === 'stock_awal' ? 'STOCK' : (t.tipe_transaksi ? t.tipe_transaksi.replace('_', ' ').toUpperCase() : '')}</span></td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis w-18 text-right">{t.jumlah}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis w-24 text-right">{formatCurrency(t.harga)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis w-32 text-right">{formatCurrency(t.total)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis w-36">{t.keterangan}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis w-24">{t.user}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis w-32 text-center">
+                      <div className="flex gap-2 justify-center items-center">
+                        {hasPermission('admin') && <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-xs font-medium" onClick={() => handleEdit(t)}>Edit</button>}
+                        {hasPermission('admin') && <button className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs font-medium" onClick={() => handleDelete(t.id)}>Hapus</button>}
                       </div>
                     </td>
                   </tr>

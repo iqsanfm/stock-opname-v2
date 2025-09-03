@@ -101,18 +101,19 @@ const RecipeFormModal = ({ show, onClose, recipe, onSave, handleLogout }) => {
   if (!show) return null;
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content large">
+    <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50 p-4">
+      <div className="bg-white p-8 rounded-lg shadow-2xl relative max-w-3xl w-full mx-auto transform transition-all sm:my-8 sm:align-middle">
         {alert.message && <Alert message={alert.message} type={alert.type} onClose={() => setAlert({ message: '', type: '' })} />}
-        <h2>{recipe ? 'Edit Resep' : 'Buat Resep Baru'}</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="product">Produk Jadi</label>
+        <h2 className="text-2xl font-bold mb-6 text-gray-800">{recipe ? 'Edit Resep' : 'Buat Resep Baru'}</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="product" className="block text-sm font-medium text-gray-700">Produk Jadi</label>
             <select
               id="product"
               value={productId}
               onChange={(e) => setProductId(e.target.value)}
               required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             >
               <option value="" disabled>Pilih Produk Jadi</option>
               {allItems.map(item => (
@@ -121,20 +122,21 @@ const RecipeFormModal = ({ show, onClose, recipe, onSave, handleLogout }) => {
             </select>
           </div>
 
-          <hr />
-          <h4>Bahan Baku</h4>
-          {ingredients.length === 0 && <p>Belum ada bahan baku ditambahkan. Klik "+ Tambah Bahan" untuk memulai.</p>}
+          <hr className="my-4 border-gray-200" />
+          <h4 className="text-lg font-semibold mb-3 text-gray-800">Bahan Baku</h4>
+          {ingredients.length === 0 && <p className="text-gray-600 mb-4">Belum ada bahan baku ditambahkan. Klik "+ Tambah Bahan" untuk memulai.</p>}
           {ingredients.map((ing, index) => {
             const selectedItem = allItems.find(item => item._id === ing.item);
             return (
-              <div className="ingredient-row" key={index}>
-                <div className="form-group">
-                  <label htmlFor={`ingredient-item-${index}`}>Item Bahan</label>
+              <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_auto] gap-4 items-end mb-4" key={index}>
+                <div>
+                  <label htmlFor={`ingredient-item-${index}`} className="block text-sm font-medium text-gray-700">Item Bahan</label>
                   <select
                     id={`ingredient-item-${index}`}
                     value={ing.item}
                     onChange={(e) => handleIngredientChange(index, 'item', e.target.value)}
                     required
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   >
                     <option value="" disabled>Pilih Bahan</option>
                     {allItems.map(item => (
@@ -142,9 +144,9 @@ const RecipeFormModal = ({ show, onClose, recipe, onSave, handleLogout }) => {
                     ))}
                   </select>
                 </div>
-                <div className="form-group quantity-group">
-                  <label htmlFor={`ingredient-quantity-${index}`}>Jumlah</label>
-                  <div className="quantity-input-wrapper">
+                <div className="flex items-center gap-2">
+                  <div>
+                    <label htmlFor={`ingredient-quantity-${index}`} className="block text-sm font-medium text-gray-700">Jumlah</label>
                     <input
                       type="number"
                       id={`ingredient-quantity-${index}`}
@@ -154,21 +156,22 @@ const RecipeFormModal = ({ show, onClose, recipe, onSave, handleLogout }) => {
                       step="0.01"
                       min="0"
                       required
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     />
-                    {selectedItem && selectedItem.consumptionUnit && (
-                      <span className="unit-display">{selectedItem.consumptionUnit}</span>
-                    )}
                   </div>
-                  <button type="button" className="btn btn-danger btn-sm" onClick={() => removeIngredient(index)}>Hapus</button>
+                  {selectedItem && selectedItem.consumptionUnit && (
+                    <span className="text-gray-600 text-sm whitespace-nowrap mb-1">({selectedItem.consumptionUnit})</span>
+                  )}
                 </div>
+                <button type="button" className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 mt-auto" onClick={() => removeIngredient(index)}>Hapus</button>
               </div>
             );
           })}
-          <button type="button" className="btn btn-secondary" onClick={addIngredient}>+ Tambah Bahan</button>
+          <button type="button" className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" onClick={addIngredient}>+ Tambah Bahan</button>
 
-          <div className="modal-actions">
-            <button type="submit" className="btn btn-success">Simpan Resep</button>
-            <button type="button" className="btn btn-secondary" onClick={onClose}>Batal</button>
+          <div className="flex justify-end space-x-3 mt-6">
+            <button type="submit" className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Simpan Resep</button>
+            <button type="button" className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" onClick={onClose}>Batal</button>
           </div>
         </form>
       </div>

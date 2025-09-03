@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import Alert from '../UI/Alert';
-import './AuthModal.css';
-import './Login.css';
+
 import LoginForm from './LoginForm';
 
 const AuthPage = ({ onLogin }) => {
@@ -12,14 +11,14 @@ const AuthPage = ({ onLogin }) => {
   };
 
   return (
-    <div className="login-page-wrapper">
-      <Alert 
-        message={alert.message} 
-        type={alert.type} 
-        onClose={() => setAlert({ message: '', type: '' })} 
+    <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50 p-4">
+      <Alert
+        message={alert.message}
+        type={alert.type}
+        onClose={() => setAlert({ message: '', type: '' })}
       />
-      <div id="authModal" className="auth-container">
-        <div className="auth-content">
+      <div id="authModal" className="bg-white p-8 rounded-lg shadow-2xl max-w-md w-full mx-auto transform transition-all sm:my-8 sm:align-middle">
+        <div className="text-center">
           <LoginForm onLogin={onLogin} showAlert={showAlert} />
         </div>
       </div>

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import apiCall from '../../services/api';
 import Alert from '../UI/Alert';
-import './StockOpname.css';
 
-const StockOpname = ({ user, hasPermission, handleLogout, activeTab, triggerTransactionsRefresh, opnameData: propOpnameData, setOpnameData: setPropOpnameData }) => {
+
+const StockOpname = ({ hasPermission, handleLogout, activeTab, triggerTransactionsRefresh, opnameData: propOpnameData, setTransactions }) => {
   const [opnameMonth, setOpnameMonth] = useState('');
   const [newOpnameMonthInput, setNewOpnameMonthInput] = useState(new Date().toISOString().slice(0, 7));
   const [filterSparepart, setFilterSparepart] = useState('');
@@ -90,8 +90,8 @@ const StockOpname = ({ user, hasPermission, handleLogout, activeTab, triggerTran
     }
     
     return localOpnameData.filter(item => 
-      item.sparepart_name && 
-      item.sparepart_name.toLowerCase().includes(filterSparepart.toLowerCase())
+      item.itemId?.name && 
+      item.itemId.name.toLowerCase().includes(filterSparepart.toLowerCase())
     );
   }, [localOpnameData, filterSparepart]);
 
@@ -261,7 +261,7 @@ const StockOpname = ({ user, hasPermission, handleLogout, activeTab, triggerTran
         try {
           const errorResult = await response.json();
           errorMessage = errorResult.message || errorMessage;
-        } catch (parseError) {
+        } catch (_parseError) {
           // If we can't parse JSON, use status text
           errorMessage = response.statusText || errorMessage;
         }
@@ -340,39 +340,40 @@ const StockOpname = ({ user, hasPermission, handleLogout, activeTab, triggerTran
 
   return (
     <div className="opname-tab">
-      <h2>Stock Opname</h2>
+      
       
       {alert.message && <Alert message={alert.message} type={alert.type} onClose={() => setAlert({ message: '', type: '' })} />}
       
       {/* Opname Statistics */}
-      <div className="stats-grid">
-        <div className="stat-card">
-          <div className="stat-value">{stats.totalItems}</div>
-          <div className="stat-label">Items di Opname</div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+        <div className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-6 rounded-xl text-center shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 ease-in-out">
+          <div className="text-3xl font-bold">{stats.totalItems}</div>
+          <div className="text-sm">Items di Opname</div>
         </div>
-        <div className="stat-card">
-          <div className="stat-value">{formatCurrency(stats.totalValue)}</div>
-          <div className="stat-label">Total Value Opname</div>
+        <div className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-6 rounded-xl text-center shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 ease-in-out">
+          <div className="text-3xl font-bold">{formatCurrency(stats.totalValue)}</div>
+          <div className="text-sm">Total Value Opname</div>
         </div>
-        <div className="stat-card">
-          <div className="stat-value">{stats.totalIn}</div>
-          <div className="stat-label">Selisih Lebih</div>
+        <div className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-6 rounded-xl text-center shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 ease-in-out">
+          <div className="text-3xl font-bold">{stats.totalIn}</div>
+          <div className="text-sm">Selisih Lebih</div>
         </div>
-        <div className="stat-card">
-          <div className="stat-value">{stats.totalOut}</div>
-          <div className="stat-label">Selisih Kurang</div>
+        <div className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-6 rounded-xl text-center shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 ease-in-out">
+          <div className="text-3xl font-bold">{stats.totalOut}</div>
+          <div className="text-sm">Selisih Kurang</div>
         </div>
       </div>
 
-      <div className="form-section">
-        <div className="controls-section">
-          <div className="filter-section">
-            <div className="form-group">
-              <label htmlFor="opnameMonth">Bulan Opname</label>
+      <div className="bg-white p-8 rounded-xl shadow-lg mb-8">
+        <div className="flex flex-wrap justify-between items-start mb-6 gap-5">
+          <div className="flex flex-wrap gap-4 items-end">
+            <div className="mb-4">
+              <label htmlFor="opnameMonth" className="block text-gray-700 text-sm font-bold mb-2">Bulan Opname</label>
               <select 
                 id="opnameMonth" 
                 value={opnameMonth} 
                 onChange={handleMonthChange} 
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               >
                 {availableOpnameMonths.length > 0 ? (
                   availableOpnameMonths.map(month => (
@@ -383,107 +384,109 @@ const StockOpname = ({ user, hasPermission, handleLogout, activeTab, triggerTran
                 )}
               </select>
             </div>
-            <div className="form-group">
-              <label htmlFor="filterOpnameSparepart">Filter Nama Barang</label>
+            <div className="mb-4">
+              <label htmlFor="filterOpnameSparepart" className="block text-gray-700 text-sm font-bold mb-2">Filter Nama Barang</label>
               <input 
                 type="text" 
                 id="filterOpnameSparepart" 
                 placeholder="Cari nama barang..." 
                 value={filterSparepart} 
                 onChange={handleFilterChange} 
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
             </div>
           </div>
 
-          <div className="actions">
+          <div className="flex flex-wrap gap-4 items-center">
             {hasPermission('admin') && (
-              <div className="create-opname-controls">
-                <div className="form-group">
-                  <label htmlFor="newOpnameMonth">Bulan Sesi Baru</label>
+              <div className="flex flex-wrap gap-4 items-center">
+                <div>
+                  <label htmlFor="newOpnameMonth" className="block text-gray-700 text-sm font-bold mb-2">Bulan Sesi Baru</label>
                   <input
                     type="month"
                     id="newOpnameMonth"
                     value={newOpnameMonthInput}
                     onChange={(e) => setNewOpnameMonthInput(e.target.value)}
-                    className="form-control"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   />
                 </div>
-                <button className="btn btn-primary btn-fixed-size" onClick={handleCreateOpname}>
+                <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md font-medium mt-7" onClick={handleCreateOpname}>
                   Buat Sesi Opname Baru
                 </button>
               </div>
             )}
-            <button className="btn btn-info btn-fixed-size" onClick={exportOpnameReport}>Export Stock Opname</button>
-            <button className="btn btn-success btn-fixed-size" onClick={saveOpnameResults}>Simpan Hasil Opname</button>
+            <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md font-medium mt-7" onClick={exportOpnameReport}>Export Stock Opname</button>
+            <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md font-medium mt-7" onClick={saveOpnameResults}>Simpan Hasil Opname</button>
             {hasPermission('admin') && (
-              <button className="btn btn-danger btn-fixed-size" onClick={handleDeleteOpname}>
+              <button className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md font-medium mt-7" onClick={handleDeleteOpname}>
                 Hapus Sesi Opname
               </button>
             )}
           </div>
         </div>
 
-        <div className="table-container">
+        <div className="overflow-x-auto rounded-lg shadow-md">
           {isLoading ? (
-            <div className="loading">Memuat data opname...</div>
+            <div className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-center">Memuat data opname...</div>
           ) : localOpnameData.length === 0 ? (
-            <div className="no-data">
+            <div className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-center">
               <p>Tidak ada data opname untuk bulan ini.</p>
               {hasPermission('admin') && <p>Gunakan tombol "Buat Sesi Opname Baru" untuk memulai.</p>}
             </div>
           ) : (
-            <table id="opnameTable">
-              <thead>
+            <table id="opnameTable" className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-indigo-600 text-white">
                 <tr>
-                  <th className="opname-col-sku">SKU</th>
-                  <th className="opname-col-nama-barang">Nama Barang</th>
-                  <th className="opname-col-jenis">Jenis</th>
-                  <th className="opname-col-merk">Merk</th>
-                  <th className="opname-col-stock-sistem">Stock Sistem</th>
-                  <th className="opname-col-stock-fisik">Stock Fisik (Input)</th>
-                  <th className="opname-col-selisih">Selisih</th>
-                  <th className="opname-col-harga">Harga</th>
-                  <th className="opname-col-value-sistem">Value Sistem</th>
-                  <th className="opname-col-value-fisik">Value Fisik</th>
-                  <th className="keterangan-col">Keterangan</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">SKU</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Nama Barang</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Jenis</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Merk</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Stock Sistem</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Stock Fisik (Input)</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Selisih</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Harga</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Value Sistem</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Value Fisik</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Keterangan</th>
                 </tr>
               </thead>
               <tbody id="opnameBody">
                 {filteredOpnameData.map((item, index) => (
                   <tr key={item.id || index}>
-                    <td>{item.itemId?.sku || '-'}</td>
-                    <td>{item.itemId?.name || '-'}</td>
-                    <td>{item.itemId?.category || '-'}</td>
-                    <td>{item.itemId?.brand || '-'}</td>
-                    <td>{item.stockSistem}</td>
-                    <td className="opname-col-stock-fisik-input">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis">{item.itemId?.sku || '-'}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis">{item.itemId?.name || '-'}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis">{item.itemId?.category || '-'}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis">{item.itemId?.brand || '-'}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis text-right">{item.stockSistem}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis">
                       <input 
                         type="number" 
                         value={item.stockFisik || ''} 
                         min="0" 
                         onChange={(e) => updateStockFisik(index, e.target.value)} 
-                        className="form-control" 
+                        className="form-control shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
                       />
                     </td>
-                    <td className={item.selisih > 0 ? 'positive' : item.selisih < 0 ? 'negative' : ''}>
+                    <td className={`px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis text-right ${item.selisih > 0 ? 'text-green-600' : item.selisih < 0 ? 'text-red-600' : ''}`}>
                       {item.selisih || 0}
                     </td>
-                    <td className="opname-col-harga">{formatCurrency(item.unitPrice)}</td>
-                    <td className="opname-col-value-sistem">{formatCurrency(item.valueSistem)}</td>
-                    <td className="opname-col-value-fisik">{formatCurrency(item.valueFisik)}</td>
-                    <td className="keterangan-col">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis text-right">{formatCurrency(item.unitPrice)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis text-right">{formatCurrency(item.valueSistem)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis text-right">{formatCurrency(item.valueFisik)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis">
                       <input 
                         type="text" 
                         value={item.keterangan || ''} 
                         onChange={(e) => updateKeterangan(index, e.target.value)} 
-                        className="form-control" 
+                        className="form-control shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
                         placeholder="Keterangan..." 
                       />
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                ))
+              }
+            </tbody>
+          </table>
           )}
         </div>
       </div>

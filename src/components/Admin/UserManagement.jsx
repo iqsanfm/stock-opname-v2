@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import apiCall from '../../services/api';
 import Alert from '../UI/Alert';
 import UserFormModal from './UserFormModal';
-import './UserManagement.css';
+
 
 const UserManagement = ({ handleLogout }) => {
   const [users, setUsers] = useState([]);
@@ -103,7 +103,7 @@ const UserManagement = ({ handleLogout }) => {
   };
 
   return (
-    <div className="user-management-container">
+    <div className="p-6 bg-gray-100 min-h-screen">
       {alert.message && <Alert message={alert.message} type={alert.type} onClose={() => setAlert({ message: '', type: '' })} />}
       
       {isModalOpen && (
@@ -114,36 +114,55 @@ const UserManagement = ({ handleLogout }) => {
         />
       )}
 
-      <div className="page-header">
-        <h1>User Management</h1>
-        <button onClick={handleCreate} className="btn btn-primary">Create New User</button>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">User Management</h1>
+        <button 
+          onClick={handleCreate} 
+          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300"
+        >
+          Create New User
+        </button>
       </div>
 
-      {loading && <p>Loading users...</p>}
-      {error && <p className="error-message">{error}</p>}
+      {loading && <p className="text-center text-gray-600">Loading users...</p>}
+      {error && <p className="text-center text-red-600 bg-red-100 p-3 rounded-lg">{error}</p>}
       
       {!loading && !error && (
-        <div className="table-container">
-          <table>
-            <thead>
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
               <tr>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="bg-white divide-y divide-gray-200">
               {users.map(user => (
-                <tr key={user._id}>
-                  <td>{user.username}</td>
-                  <td>{user.email}</td>
-                  <td>{user.role}</td>
-                  <td>{user.isActive ? 'Active' : 'Inactive'}</td>
-                  <td>
-                    <button onClick={() => handleEdit(user)} className="btn btn-sm btn-warning">Edit</button>
-                    <button onClick={() => handleDelete(user._id)} className="btn btn-sm btn-danger">Delete</button>
+                <tr key={user._id} className="hover:bg-gray-50 transition duration-150">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{user.username}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.email}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.role}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                      {user.isActive ? 'Active' : 'Inactive'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button 
+                      onClick={() => handleEdit(user)} 
+                      className="text-indigo-600 hover:text-indigo-900 mr-4"
+                    >
+                      Edit
+                    </button>
+                    <button 
+                      onClick={() => handleDelete(user._id)} 
+                      className="text-red-600 hover:text-red-900"
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}

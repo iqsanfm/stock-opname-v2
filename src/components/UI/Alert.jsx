@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import './Alert.css';
+
 
 const Alert = ({ message, type, onClose }) => {
   useEffect(() => {
@@ -17,7 +17,12 @@ const Alert = ({ message, type, onClose }) => {
   }
 
   return (
-    <div className={`alert alert-${type}`}>
+    <div className={`fixed top-4 left-1/2 -translate-x-1/2 p-4 rounded-md shadow-lg text-white z-[1000] min-w-[300px] text-center
+      ${type === 'success' ? 'bg-green-500' : ''}
+      ${type === 'error' ? 'bg-red-500' : ''}
+      ${type === 'info' ? 'bg-blue-500' : ''}
+      ${type === 'warning' ? 'bg-yellow-500' : ''}
+    `}>
       {message}
     </div>
   );

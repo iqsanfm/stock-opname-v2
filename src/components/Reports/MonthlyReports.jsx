@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import apiCall from '../../services/api';
 import Alert from '../UI/Alert';
-import './MonthlyReports.css';
 
-const MonthlyReports = ({ user, hasPermission, handleLogout, activeTab, setActiveTab, setOpnameData }) => {
+const MonthlyReports = ({ hasPermission, handleLogout, activeTab, setActiveTab, setOpnameData }) => {
   const [reportMonth, setReportMonth] = useState('');
   const [filterSparepart, setFilterSparepart] = useState('');
   const [monthlyReportData, setMonthlyReportData] = useState([]);
@@ -76,7 +75,7 @@ const MonthlyReports = ({ user, hasPermission, handleLogout, activeTab, setActiv
       if (err.isAuthError) {
         handleLogout();
       } else {
-        setError(err.message || 'Terjadi kesalahan saat memuat laporan bulanan.');
+        setError(err.message || 'Terjadi kesalahan saat memuat laporan bulanan.', 'error');
         setMonthlyReportData([]);
       }
     } finally {
@@ -135,7 +134,7 @@ const MonthlyReports = ({ user, hasPermission, handleLogout, activeTab, setActiv
         try {
           const errorResult = await response.json();
           errorMessage = errorResult.message || errorMessage;
-        } catch (parseError) {
+        } catch (_parseError) {
           // If we can't parse JSON, use status text
           errorMessage = response.statusText || errorMessage;
         }
@@ -250,32 +249,33 @@ const MonthlyReports = ({ user, hasPermission, handleLogout, activeTab, setActiv
       {alert.message && <Alert message={alert.message} type={alert.type} onClose={() => setAlert({ message: '', type: '' })} />}
 
       {/* Monthly Statistics */}
-      <div className="stats-grid">
-        <div className="stat-card">
-          <div className="stat-value">{reportSummary?.totalStockAkhir || 0}</div>
-          <div className="stat-label">Total Stock Akhir</div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+        <div className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-6 rounded-xl text-center shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 ease-in-out">
+          <div className="text-3xl font-bold">{reportSummary?.totalStockAkhir || 0}</div>
+          <div className="text-sm">Total Stock Akhir</div>
         </div>
-        <div className="stat-card">
-          <div className="stat-value">{formatCurrency(reportSummary?.totalValue || 0)}</div>
-          <div className="stat-label">Total Value</div>
+        <div className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-6 rounded-xl text-center shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 ease-in-out">
+          <div className="text-3xl font-bold">{formatCurrency(reportSummary?.totalValue || 0)}</div>
+          <div className="text-sm">Total Value</div>
         </div>
-        <div className="stat-card">
-          <div className="stat-value">{reportSummary?.totalMasuk || 0}</div>
-          <div className="stat-label">Total Masuk Bulan Ini</div>
+        <div className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-6 rounded-xl text-center shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 ease-in-out">
+          <div className="text-3xl font-bold">{reportSummary?.totalMasuk || 0}</div>
+          <div className="text-sm">Total Masuk Bulan Ini</div>
         </div>
-        <div className="stat-card">
-          <div className="stat-value">{reportSummary?.totalKeluar || 0}</div>
-          <div className="stat-label">Total Keluar Bulan Ini</div>
+        <div className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-6 rounded-xl text-center shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 ease-in-out">
+          <div className="text-3xl font-bold">{reportSummary?.totalKeluar || 0}</div>
+          <div className="text-sm">Total Keluar Bulan Ini</div>
         </div>
       </div>
 
-      <div className="form-section">
-        <h2>Laporan Bulanan</h2>
-        <div className="controls-section">
-          <div className="filter-section">
-            <div className="form-group">
-              <label htmlFor="reportMonth">Pilih Bulan</label>
-              <select id="reportMonth" value={reportMonth} onChange={handleMonthChange}>
+      <div className="bg-white p-8 rounded-xl shadow-lg mb-8">
+        <h2 className="text-2xl font-bold mb-6 text-gray-800">Laporan Bulanan</h2>
+        <div className="flex flex-wrap justify-between items-start mb-6 gap-5">
+          <div className="flex flex-wrap gap-4 items-end">
+            <div className="mb-4">
+              <label htmlFor="reportMonth" className="block text-gray-700 text-sm font-bold mb-2">Pilih Bulan</label>
+              <select id="reportMonth" value={reportMonth} onChange={handleMonthChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <option value="">Tidak ada laporan tersedia</option>
                 {availableMonths.length > 0 ? (
                   availableMonths.map(month => (
                     <option key={month} value={month}>{month}</option>
@@ -285,67 +285,68 @@ const MonthlyReports = ({ user, hasPermission, handleLogout, activeTab, setActiv
                 )}
               </select>
             </div>
-            <div className="form-group">
-              <label htmlFor="filterMonthlySparepart">Filter Nama Barang</label>
-              <input type="text" id="filterMonthlySparepart" placeholder="Cari nama barang..." value={filterSparepart} onChange={handleFilterChange} />
+            <div className="mb-4">
+              <label htmlFor="filterMonthlySparepart" className="block text-gray-700 text-sm font-bold mb-2">Filter Nama Barang</label>
+              <input type="text" id="filterMonthlySparepart" placeholder="Cari nama barang..." value={filterSparepart} onChange={handleFilterChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
             </div>
           </div>
 
-          <div className="actions">
-            <button className="btn btn-info" onClick={exportMonthlyReport}>Export Laporan Bulanan</button>
-            <button className="btn btn-warning" onClick={copyToOpname}>Copy ke Stock Opname</button>
+          <div className="flex gap-4 flex-wrap items-center">
+            <button className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" onClick={exportMonthlyReport}>Export Laporan Bulanan</button>
+            <button className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500" onClick={copyToOpname}>Copy ke Stock Opname</button>
             {hasPermission('admin') && (
-              <button className="btn btn-danger" onClick={handleDeleteReport}>
+              <button className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" onClick={handleDeleteReport}>
                 Hapus Laporan
               </button>
             )}
           </div>
         </div>
+      </div>
 
-        <div className="table-container">
+      <div className="overflow-x-auto rounded-lg shadow-md">
           {loading ? (
-            <div className="loading">Memuat laporan...</div>
+            <div className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-center">Memuat laporan...</div>
           ) : error ? (
-            <div className="error" style={{ color: 'red' }}>Error: {error}</div>
+            <div className="px-6 py-4 whitespace-nowrap text-sm text-red-600 text-center">Error: {error}</div>
           ) : filteredMonthlyData.length === 0 ? (
-            <div className="no-data">Tidak ada data laporan untuk bulan ini.</div>
+            <div className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-center">Tidak ada data laporan untuk bulan ini.</div>
           ) : (
-            <table id="monthlyReportTable">
-              <thead>
+            <table id="monthlyReportTable" className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-indigo-600 text-white">
                 <tr>
-                  <th className="monthly-col-sku">SKU</th>
-                  <th className="monthly-col-nama-barang">Nama Barang</th>
-                  <th className="monthly-col-jenis">Jenis</th>
-                  <th className="monthly-col-merk">Merk</th>
-                  <th className="monthly-col-stock-awal">Stock Awal</th>
-                  <th className="monthly-col-harga-awal">Harga Awal</th>
-                  <th className="monthly-col-barang-masuk">Barang Masuk</th>
-                  <th className="monthly-col-barang-keluar">Barang Keluar</th>
-                  <th className="monthly-col-stock-akhir">Stock Akhir</th>
-                  <th className="monthly-col-harga-rata-rata">Harga Rata - Rata</th>
-                  <th className="monthly-col-total-value">Total Value</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-28">SKU</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-56">Nama Barang</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-40">Jenis</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-28">Merk</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-white uppercase tracking-wider w-32">Stock Awal</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-white uppercase tracking-wider w-36">Harga Awal</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-white uppercase tracking-wider w-32">Barang Masuk</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-white uppercase tracking-wider w-32">Barang Keluar</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-white uppercase tracking-wider w-32">Stock Akhir</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-white uppercase tracking-wider w-40">Harga Rata - Rata</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-white uppercase tracking-wider w-48">Total Value</th>
                 </tr>
               </thead>
               <tbody id="monthlyReportBody">
                 {filteredMonthlyData.map((item, index) => (
                   <tr key={item.id || index}>
-                    <td className="monthly-col-sku">{item.itemId?.sku || '-'}</td>
-                    <td className="monthly-col-nama-barang">{item.itemId?.name || '-'}</td>
-                    <td className="monthly-col-jenis">{item.itemId?.category || '-'}</td>
-                    <td className="monthly-col-merk">{item.itemId?.brand || '-'}</td>
-                    <td className="monthly-col-stock-awal">{item.stockAwal}</td>
-                    <td className="monthly-col-harga-awal">{formatCurrency(item.hargaAwal)}</td>
-                    <td className="monthly-col-barang-masuk">{item.barangMasuk}</td>
-                    <td className="monthly-col-barang-keluar">{item.barangKeluar}</td>
-                    <td className="monthly-col-stock-akhir">{item.stockAkhir}</td>
-                    <td className="monthly-col-harga-rata-rata">{formatCurrency(item.hargaRataRata)}</td>
-                    <td className="monthly-col-total-value">{formatCurrency(item.totalValue)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis w-28">{item.itemId?.sku || '-'}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis w-56">{item.itemId?.name || '-'}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis w-40">{item.itemId?.category || '-'}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis w-28">{item.itemId?.brand || '-'}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis w-32 text-right">{item.stockAwal}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis w-36 text-right">{formatCurrency(item.hargaAwal)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis w-32 text-right">{item.barangMasuk}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis w-32 text-right">{item.barangKeluar}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis w-32 text-right">{item.stockAkhir}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis w-40 text-right">{formatCurrency(item.hargaRataRata)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 overflow-hidden text-ellipsis w-48 text-right">{formatCurrency(item.totalValue)}</td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                ))
+              }
+            </tbody>
+          </table>
           )}
-        </div>
       </div>
     </div>
   );
