@@ -34,20 +34,15 @@ pipeline {
             }
         }
 
-        stage('Deploy Docker Container') {
+        stage('Deploy') {
             steps {
                 script {
-                    echo "Deploying container ${CONTAINER_NAME}"
-
-                    // Menghentikan dan menghapus kontainer lama menggunakan perintah shell.
-                    // '|| true' ditambahkan untuk mencegah error jika kontainer tidak ada.
-                    echo "Menghentikan dan menghapus container yang sudah ada..."
-                    sh "docker stop ${CONTAINER_NAME} || true"
-                    sh "docker rm ${CONTAINER_NAME} || true"
-
-                    // Menjalankan kontainer baru menggunakan perintah shell
-                    echo "Menjalankan container baru..."
-                    sh "docker run -d -p ${HOST_PORT}:${CONTAINER_PORT} --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
+                    // Hentikan kontainer lama jika ada (|| true agar tidak error jika kontainer tidak ada)
+                    sh 'docker stop backend-vercel-container || true'
+                    // Hapus kontainer lama jika ada
+                    sh 'docker rm backend-vercel-container || true'
+                    // Jalankan kontainer baru dengan restart policy
+                    sh 'docker run -d -p 5050:5050 --restart always --name backend-vercel-container backend-vercel:${BUILD_NUMBER}'
                 }
             }
         }
