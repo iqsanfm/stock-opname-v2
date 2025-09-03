@@ -3,9 +3,9 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'backend-vercel'
-        CONTAINER_NAME = 'backend-vercel-container'
-        HOST_PORT = '5050'
+        DOCKER_IMAGE = 'frontend-stock-opname'
+        CONTAINER_NAME = 'frontend-stock-opname-container'
+        HOST_PORT = '8090'
         CONTAINER_PORT = '80'
     }
 
