@@ -11,13 +11,13 @@ const AuthPage = ({ onLogin }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50 p-4">
+    <div className="flex justify-center items-center min-h-screen p-4">
       <Alert
         message={alert.message}
         type={alert.type}
         onClose={() => setAlert({ message: '', type: '' })}
       />
-      <div id="authModal" className="bg-white p-8 rounded-lg shadow-2xl max-w-md w-full mx-auto transform transition-all sm:my-8 sm:align-middle">
+      <div id="authModal" className="bg-white p-10 rounded-xl shadow-2xl max-w-[800px] w-full transform transition-all duration-300 hover:shadow-3xl border border-gray-200">
         <div className="text-center">
           <LoginForm onLogin={onLogin} showAlert={showAlert} />
         </div>

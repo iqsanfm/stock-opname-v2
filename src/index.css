@@ -5,6 +5,7 @@
 html, body {
   height: 100%; /* Ensure html and body take full height */
   margin: 0;
+  background: linear-gradient(to right, #ece9e6, #ffffff); /* Light gradient background */
 }
 
 body {

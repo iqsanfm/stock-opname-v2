@@ -114,7 +114,7 @@ const UserManagement = ({ handleLogout }) => {
         />
       )}
 
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row justify-start sm:justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
         <h1 className="text-3xl font-bold text-gray-800">User Management</h1>
         <button 
           onClick={handleCreate} 

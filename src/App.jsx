@@ -241,13 +241,13 @@ function App() {
   };
 
   const MainApp = () => (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
       <header className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white shadow-lg rounded-lg p-8 mb-8 text-center">
         <h1 className="text-4xl font-extrabold tracking-tight mb-2">Stock Opname System</h1>
         <p className="text-indigo-200 text-lg">Sistem Manajemen Inventory dengan Transaksi Harian & Akumulasi Bulanan</p>
       </header>
       <main className="bg-white shadow-md rounded-lg p-6">
-        <div className="flex space-x-4 mb-6 border-b border-gray-200">
+        <div className="flex flex-wrap justify-center sm:justify-start space-x-2 sm:space-x-4 space-y-2 sm:space-y-0 mb-6 border-b border-gray-200">
           <button 
             className={`px-4 py-2 text-gray-500 font-medium rounded-t-lg hover:text-gray-700 hover:bg-gray-50 focus:outline-none transition-all duration-300
               ${activeTab === 'daily' ? 'border-b-2 border-indigo-600 text-indigo-600 bg-white' : ''}`}
