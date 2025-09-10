@@ -40,7 +40,7 @@ const DailyView = ({ hasPermission, handleLogout, transactions, loading, error, 
   useEffect(() => {
     const fetchSkuSuggestions = async () => {
       try {
-        const response = await apiCall('/api/items/suggestions');
+        const response = await apiCall('/api/items?limit=0');
         if (response.success) {
           setSkuSuggestions(response.data);
         } else {
