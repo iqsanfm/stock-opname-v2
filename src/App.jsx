@@ -65,7 +65,7 @@ function App() {
     setLoading(true);
     setError(null);
     try {
-      const response = await apiCall('/api/transactions');
+      const response = await apiCall('api/transactions');
       if (response.success) {
         const mappedTransactions = response.data.map(t => ({
           id: t.id,
@@ -106,7 +106,7 @@ function App() {
         page: itemsPagination.currentPage,
         limit: itemsPagination.itemsPerPage,
       });
-      const response = await apiCall(`/api/items?${params.toString()}`);
+      const response = await apiCall(`api/items?${params.toString()}`);
       if (response.success) {
         setItems(Array.isArray(response.data) ? response.data : []);
         setItemsPagination(prev => ({

@@ -58,7 +58,7 @@ const ItemFormModal = ({ show, onClose, item, onSave, handleLogout }) => {
     e.preventDefault();
     try {
       const method = item ? 'PUT' : 'POST';
-      const endpoint = item ? `/api/items/${item._id}` : '/api/items';
+      const endpoint = item ? `api/items/${item._id}` : 'api/items';
       const response = await apiCall(endpoint, method, formData);
 
       if (response.success) {
@@ -157,7 +157,7 @@ const ItemList = ({ hasPermission, handleLogout, activeTab, items, loading, erro
   useEffect(() => {
     const fetchSummary = async () => {
       try {
-        const summaryResponse = await apiCall('/api/items/summary');
+        const summaryResponse = await apiCall('api/items/summary');
         if (summaryResponse.success) {
           setSummaryData(summaryResponse.data || null);
         }
@@ -187,7 +187,7 @@ const ItemList = ({ hasPermission, handleLogout, activeTab, items, loading, erro
     }
     if (window.confirm('Yakin ingin menghapus item ini?')) {
       try {
-        const response = await apiCall(`/api/items/${itemId}`, 'DELETE');
+        const response = await apiCall(`api/items/${itemId}`, 'DELETE');
         if (response.success) {
           showAlert('Item berhasil dihapus!', 'success');
           triggerItemsRefresh();
@@ -222,7 +222,7 @@ const ItemList = ({ hasPermission, handleLogout, activeTab, items, loading, erro
     formData.append('file', file);
 
     try {
-      const response = await apiCall('/api/items/import-csv', 'POST', formData, true);
+      const response = await apiCall('api/items/import-csv', 'POST', formData, true);
       if (response.success) {
         showAlert(`Import CSV berhasil! ${response.summary.imported} item diimport, ${response.summary.skipped} dilewati.`, 'success');
         triggerItemsRefresh();

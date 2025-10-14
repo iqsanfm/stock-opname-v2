@@ -12,7 +12,7 @@ const RecipeFormModal = ({ show, onClose, recipe, onSave, handleLogout }) => {
   const fetchAllItems = useCallback(async () => {
     try {
       // Assuming an endpoint that returns all items without pagination
-      const response = await apiCall('/api/items?limit=0'); 
+      const response = await apiCall('api/items?limit=0'); 
       if (response.success && Array.isArray(response.data)) {
         setAllItems(response.data);
       }
@@ -77,7 +77,7 @@ const RecipeFormModal = ({ show, onClose, recipe, onSave, handleLogout }) => {
 
     try {
       const method = recipe ? 'PUT' : 'POST';
-      const endpoint = recipe ? `/api/recipes/${recipe._id}` : '/api/recipes';
+      const endpoint = recipe ? `api/recipes/${recipe._id}` : 'api/recipes';
       const response = await apiCall(endpoint, method, payload);
 
       if (response.success) {

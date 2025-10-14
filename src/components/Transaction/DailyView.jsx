@@ -40,7 +40,7 @@ const DailyView = ({ hasPermission, handleLogout, transactions, loading, error, 
   useEffect(() => {
     const fetchSkuSuggestions = async () => {
       try {
-        const response = await apiCall('/api/items?limit=0');
+        const response = await apiCall('api/items?limit=0');
         if (response.success) {
           setSkuSuggestions(response.data);
         } else {
@@ -56,7 +56,7 @@ const DailyView = ({ hasPermission, handleLogout, transactions, loading, error, 
   // Fetch transaction statistics from backend
   const fetchTransactionStats = useCallback(async () => {
     try {
-      const response = await apiCall('/api/transactions/statistics');
+      const response = await apiCall('api/transactions/statistics');
       if (response.success) {
         const dailyStats = response.data.dailyStats || [];
         let todayCount = 0;
@@ -186,9 +186,9 @@ const DailyView = ({ hasPermission, handleLogout, transactions, loading, error, 
     try {
       let response;
       if (editingTransactionId) {
-        response = await apiCall(`/api/transactions/${editingTransactionId}`, 'PUT', transactionData);
+        response = await apiCall(`api/transactions/${editingTransactionId}`, 'PUT', transactionData);
       } else {
-        response = await apiCall('/api/transactions', 'POST', transactionData);
+        response = await apiCall('api/transactions', 'POST', transactionData);
       }
       
       if (response.success) {
@@ -233,7 +233,7 @@ const DailyView = ({ hasPermission, handleLogout, transactions, loading, error, 
     }
     if (window.confirm('Yakin ingin menghapus transaksi ini?')) {
       try {
-        const response = await apiCall(`/api/transactions/${id}`, 'DELETE', { confirmDelete: true });
+        const response = await apiCall(`api/transactions/${id}`, 'DELETE', { confirmDelete: true });
         if (response.success) {
           showAlert('Transaksi berhasil dihapus!', 'success');
           // Re-fetch transactions and stats
@@ -313,7 +313,7 @@ const DailyView = ({ hasPermission, handleLogout, transactions, loading, error, 
     }
 
     try {
-      const response = await apiCall('/api/auth/clear-data', 'POST', { password: password, confirm: 'I_UNDERSTAND_AND_WANT_TO_DELETE_ALL_DATA' });
+      const response = await apiCall('api/auth/clear-data', 'POST', { password: password, confirm: 'I_UNDERSTAND_AND_WANT_TO_DELETE_ALL_DATA' });
       
       if (response.success) {
         showAlert('Semua data transaksi harian berhasil dihapus!', 'success');
@@ -340,7 +340,7 @@ const DailyView = ({ hasPermission, handleLogout, transactions, loading, error, 
       return;
     }
     try {
-      const response = await apiCall('/api/monthly-reports/generate', 'POST', { reportMonth: reportMonth });
+      const response = await apiCall('api/monthly-reports/generate', 'POST', { reportMonth: reportMonth });
       if (response.success) {
         showAlert('Laporan bulanan berhasil di-generate!', 'success');
         setActiveTab('monthly');

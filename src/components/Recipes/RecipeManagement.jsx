@@ -19,7 +19,7 @@ const RecipeManagement = ({ hasPermission, handleLogout, activeTab }) => {
   const fetchRecipes = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await apiCall('/api/recipes');
+      const response = await apiCall('api/recipes');
       if (response.success) {
         setRecipes(response.data || []);
       } else {
@@ -59,7 +59,7 @@ const RecipeManagement = ({ hasPermission, handleLogout, activeTab }) => {
     }
     if (window.confirm('Yakin ingin menghapus resep ini?')) {
       try {
-        const response = await apiCall(`/api/recipes/${recipeId}`, 'DELETE');
+        const response = await apiCall(`api/recipes/${recipeId}`, 'DELETE');
         if (response.success) {
           showAlert('Resep berhasil dihapus.', 'success');
           fetchRecipes();

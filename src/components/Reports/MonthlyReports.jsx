@@ -21,7 +21,7 @@ const MonthlyReports = ({ hasPermission, handleLogout, activeTab, setActiveTab, 
   useEffect(() => {
     const fetchAvailableMonths = async () => {
       try {
-        const response = await apiCall('/api/monthly-reports/months');
+        const response = await apiCall('api/monthly-reports/months');
         if (response.success && response.data) {
           setAvailableMonths(response.data);
           if (response.data.length > 0) {
@@ -57,7 +57,7 @@ const MonthlyReports = ({ hasPermission, handleLogout, activeTab, setActiveTab, 
     setError(null);
     setReportSummary(null); // Reset summary on new fetch
     try {
-      const response = await apiCall(`/api/monthly-reports/${reportMonth}`);
+      const response = await apiCall(`api/monthly-reports/${reportMonth}`);
       if (response.success && response.data) {
         // Handle cases where data is the array or is in data.items
         const items = Array.isArray(response.data) ? response.data : response.data.items;
@@ -116,7 +116,7 @@ const MonthlyReports = ({ hasPermission, handleLogout, activeTab, setActiveTab, 
       return;
     }
     try {
-      const url = `${import.meta.env.VITE_API_BASE_URL}/api/monthly-reports/${reportMonth}/export`;
+      const url = `${import.meta.env.VITE_API_BASE_URL}api/monthly-reports/${reportMonth}/export`;
       const authToken = localStorage.getItem('authToken');
       const headers = {
         'Authorization': `Bearer ${authToken}`,
@@ -169,14 +169,14 @@ const MonthlyReports = ({ hasPermission, handleLogout, activeTab, setActiveTab, 
     }
     if (window.confirm(`Yakin ingin menghapus laporan bulanan untuk ${reportMonth}?`)) {
       try {
-        const response = await apiCall(`/api/monthly-reports/${reportMonth}`, 'DELETE');
+        const response = await apiCall(`api/monthly-reports/${reportMonth}`, 'DELETE');
         if (response.success) {
           showAlert('Laporan berhasil dihapus!', 'success');
           // Re-fetch available months and reports
           // This will also reset the selected month if the deleted one was selected
           const fetchAvailableMonths = async () => {
             try {
-              const monthsResponse = await apiCall('/api/monthly-reports/months');
+              const monthsResponse = await apiCall('api/monthly-reports/months');
               if (monthsResponse.success && monthsResponse.data) {
                 setAvailableMonths(monthsResponse.data);
                 if (monthsResponse.data.length > 0) {

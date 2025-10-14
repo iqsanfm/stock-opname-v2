@@ -19,7 +19,7 @@ const ProfileSettings = ({ user, handleLogout }) => {
   const fetchProfile = useCallback(async () => {
     setIsLoading(true);
     try {
-      const response = await apiCall('/api/auth/profile', 'GET');
+      const response = await apiCall('api/auth/profile', 'GET');
       if (response.success && response.user) {
         setProfile({
           username: response.user.username,

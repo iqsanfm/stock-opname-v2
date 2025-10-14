@@ -20,7 +20,7 @@ const UserManagement = ({ handleLogout }) => {
   const fetchUsers = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await apiCall('/api/auth/users');
+      const response = await apiCall('api/auth/users');
       if (response.success) {
         setUsers(response.data);
       } else {
@@ -68,10 +68,10 @@ const UserManagement = ({ handleLogout }) => {
 
       if (editingUser) {
         // Edit user
-        response = await apiCall(`/api/auth/users/${editingUser._id}`, 'PUT', payload);
+        response = await apiCall(`api/auth/users/${editingUser._id}`, 'PUT', payload);
       } else {
         // Create user
-        response = await apiCall('/api/auth/users', 'POST', payload);
+        response = await apiCall('api/auth/users', 'POST', payload);
       }
 
       if (response.success) {
@@ -89,7 +89,7 @@ const UserManagement = ({ handleLogout }) => {
   const handleDelete = async (userId) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        const response = await apiCall(`/api/auth/users/${userId}`, 'DELETE');
+        const response = await apiCall(`api/auth/users/${userId}`, 'DELETE');
         if (response.success) {
           showAlert('User successfully deleted!', 'success');
           fetchUsers(); // Refresh the user list

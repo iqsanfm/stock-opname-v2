@@ -21,7 +21,7 @@ const StockOpname = ({ hasPermission, handleLogout, activeTab, triggerTransactio
   useEffect(() => {
     const fetchAvailableOpnameMonths = async () => {
       try {
-        const response = await apiCall('/api/stock-opnames/months');
+        const response = await apiCall('api/stock-opnames/months');
         if (response.success && response.data) {
           setAvailableOpnameMonths(response.data);
           if (response.data.length > 0) {
@@ -50,7 +50,7 @@ const StockOpname = ({ hasPermission, handleLogout, activeTab, triggerTransactio
     if (!opnameMonth) return;
     setIsLoading(true);
     try {
-      const response = await apiCall(`/api/stock-opnames/${opnameMonth}`, 'GET');
+      const response = await apiCall(`api/stock-opnames/${opnameMonth}`, 'GET');
       if (response.success && response.data) {
         setLocalOpnameData(response.data || []);
       } else {
@@ -173,12 +173,12 @@ const StockOpname = ({ hasPermission, handleLogout, activeTab, triggerTransactio
 
     if (window.confirm(`Yakin ingin membuat sesi stock opname baru untuk ${formattedMonth}? Ini akan mengambil data stok saat ini.`)) {
       try {
-        const response = await apiCall('/api/stock-opnames/create', 'POST', { opnameMonth: formattedMonth, copyFromReport: false });
+        const response = await apiCall('api/stock-opnames/create', 'POST', { opnameMonth: formattedMonth, copyFromReport: false });
         if (response.success) {
           showAlert('Sesi opname berhasil dibuat!', 'success');
           fetchOpnameData(); // Re-fetch data for the month
           // Also re-fetch available months to ensure the new month appears if it's new
-          const monthsResponse = await apiCall('/api/stock-opnames/months');
+          const monthsResponse = await apiCall('api/stock-opnames/months');
           if (monthsResponse.success) setAvailableOpnameMonths(monthsResponse.data);
           // After creating, we should also fetch the data for the newly created opname
           // This will trigger fetchOpnameData via useEffect if opnameMonth changes
@@ -210,12 +210,12 @@ const StockOpname = ({ hasPermission, handleLogout, activeTab, triggerTransactio
     }
     if (window.confirm(`Yakin ingin menghapus sesi stock opname untuk ${opnameMonth}?`)) {
       try {
-        const response = await apiCall(`/api/stock-opnames/${opnameMonth}`, 'DELETE');
+        const response = await apiCall(`api/stock-opnames/${opnameMonth}`, 'DELETE');
         if (response.success) {
           showAlert('Sesi opname berhasil dihapus!', 'success');
           setLocalOpnameData([]); // Clear current data
           // Re-fetch available months and set default
-          const monthsResponse = await apiCall('/api/stock-opnames/months');
+          const monthsResponse = await apiCall('api/stock-opnames/months');
           if (monthsResponse.success) {
             setAvailableOpnameMonths(monthsResponse.data);
             if (monthsResponse.data.length > 0) {
@@ -243,7 +243,7 @@ const StockOpname = ({ hasPermission, handleLogout, activeTab, triggerTransactio
       return;
     }
     try {
-      const url = `${import.meta.env.VITE_API_BASE_URL}/api/stock-opnames/${opnameMonth}/export`;
+      const url = `${import.meta.env.VITE_API_BASE_URL}api/stock-opnames/${opnameMonth}/export`;
       const authToken = localStorage.getItem('authToken');
       const headers = {
         'Authorization': `Bearer ${authToken}`,
@@ -305,7 +305,7 @@ const StockOpname = ({ hasPermission, handleLogout, activeTab, triggerTransactio
     }
 
     try {
-      const response = await apiCall('/api/stock-opnames/save-results', 'POST', { adjustments, month: opnameMonth });
+      const response = await apiCall('api/stock-opnames/save-results', 'POST', { adjustments, month: opnameMonth });
       if (response.success) {
         showAlert(`Hasil opname disimpan! ${adjustments.length} adjustment dibuat.`, 'success');
         // Re-fetch opname data and available months
