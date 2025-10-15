@@ -131,56 +131,56 @@ const MonthlyReports = ({
     );
   }, [monthlyReportData, filterSparepart]);
 
-  const exportMonthlyReport = async () => {
-    if (monthlyReportData.length === 0) {
+  const exportMonthlyReport = () => {
+    if (filteredMonthlyData.length === 0) {
       showAlert("Tidak ada data laporan untuk di-export!", "error");
       return;
     }
-    try {
-      const API_BASE_URL = import.meta.env.VITE_API_URL;
-      const url = `${API_BASE_URL}api/monthly-reports/${reportMonth}/export`;
-      const authToken = localStorage.getItem("authToken");
-      const headers = {
-        Authorization: `Bearer ${authToken}`,
-      };
 
-      const response = await fetch(url, { headers });
+    const headers = [
+      "SKU",
+      "Nama Barang",
+      "Jenis",
+      "Merk",
+      "Stock Awal",
+      "Harga Awal",
+      "Barang Masuk",
+      "Barang Keluar",
+      "Stock Akhir",
+      "Harga Rata - Rata",
+      "Total Value",
+    ];
 
-      if (response.status === 401 || response.status === 403) {
-        handleLogout();
-        return;
-      }
+    const csvContent = [
+      headers.join(","),
+      ...filteredMonthlyData.map((item) =>
+        [
+          `"${item.itemId?.sku || "-"}"`,
+          `"${item.itemId?.name || "-"}"`,
+          `"${item.itemId?.category || "-"}"`,
+          `"${item.itemId?.brand || "-"}"`,
+          item.stockAwal,
+          item.hargaAwal,
+          item.barangMasuk,
+          item.barangKeluar,
+          item.stockAkhir,
+          item.hargaRataRata,
+          item.totalValue,
+        ].join(",")
+      ),
+    ].join("\n");
 
-      if (!response.ok) {
-        let errorMessage = "Gagal meng-export laporan bulanan.";
-        try {
-          const errorResult = await response.json();
-          errorMessage = errorResult.message || errorMessage;
-        } catch (_parseError) {
-          // If we can't parse JSON, use status text
-          errorMessage = response.statusText || errorMessage;
-        }
-        showAlert(errorMessage, "error");
-        return;
-      }
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = downloadUrl;
+    a.download = `laporan_bulanan_${reportMonth}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(downloadUrl);
 
-      const blob = await response.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = downloadUrl;
-      a.download = `laporan_bulanan_${reportMonth}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(downloadUrl); // Clean up the URL object
-
-      showAlert("Laporan bulanan berhasil di-export!", "success");
-    } catch (err) {
-      showAlert(
-        err.message || "Terjadi kesalahan saat meng-export laporan bulanan.",
-        "error"
-      );
-    }
+    showAlert("Laporan bulanan berhasil di-export!", "success");
   };
 
   const handleDeleteReport = async () => {
