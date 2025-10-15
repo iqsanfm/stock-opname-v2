@@ -11,6 +11,7 @@ const MonthlyReports = ({
 }) => {
   const [reportMonth, setReportMonth] = useState("");
   const [filterSparepart, setFilterSparepart] = useState("");
+  const [filterType, setFilterType] = useState("");
   const [monthlyReportData, setMonthlyReportData] = useState([]);
   const [availableMonths, setAvailableMonths] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -123,13 +124,25 @@ const MonthlyReports = ({
 
   const filteredMonthlyData = useMemo(() => {
     if (!monthlyReportData) return [];
-    if (!filterSparepart) return monthlyReportData;
-    return monthlyReportData.filter(
-      (item) =>
-        item.itemId?.name &&
-        item.itemId.name.toLowerCase().includes(filterSparepart.toLowerCase())
-    );
-  }, [monthlyReportData, filterSparepart]);
+
+    let filteredData = monthlyReportData;
+
+    if (filterSparepart) {
+      filteredData = filteredData.filter(
+        (item) =>
+          item.itemId?.name &&
+          item.itemId.name.toLowerCase().includes(filterSparepart.toLowerCase())
+      );
+    }
+
+    if (filterType === "masuk") {
+      filteredData = filteredData.filter((item) => item.barangMasuk > 0);
+    } else if (filterType === "keluar") {
+      filteredData = filteredData.filter((item) => item.barangKeluar > 0);
+    }
+
+    return filteredData;
+  }, [monthlyReportData, filterSparepart, filterType]);
 
   const exportMonthlyReport = () => {
     if (filteredMonthlyData.length === 0) {
@@ -373,6 +386,24 @@ const MonthlyReports = ({
                 onChange={handleFilterChange}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="filterType"
+                className="block text-gray-700 text-sm font-bold mb-2"
+              >
+                Filter Tipe
+              </label>
+              <select
+                id="filterType"
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value)}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              >
+                <option value="">Semua Tipe</option>
+                <option value="masuk">Barang Masuk</option>
+                <option value="keluar">Barang Keluar</option>
+              </select>
             </div>
           </div>
 
