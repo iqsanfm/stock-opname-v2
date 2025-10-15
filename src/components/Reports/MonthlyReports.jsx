@@ -137,7 +137,8 @@ const MonthlyReports = ({
       return;
     }
     try {
-      const url = await apiCall(`api/monthly-reports/${reportMonth}/export`);
+      const API_BASE_URL = import.meta.env.VITE_API_URL;
+      const url = `${API_BASE_URL}api/monthly-reports/${reportMonth}/export`;
       const authToken = localStorage.getItem("authToken");
       const headers = {
         Authorization: `Bearer ${authToken}`,
